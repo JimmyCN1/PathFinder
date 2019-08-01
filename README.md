@@ -8,6 +8,6 @@ This project will be written in c++ using the following skills:
 - Dynamic Memory Management
 - Provided API
 
-**Credits: **
+**Credits:**
 
 _Jimmy Njoku_
