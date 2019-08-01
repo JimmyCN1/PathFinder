@@ -5,33 +5,16 @@
 #include <cstdlib>
 #include <iostream>
 
-PDList::PDList()
-{
-}
+PDList::PDList() {}
 
-PDList::~PDList()
-{
-}
+PDList::~PDList() {}
 
-int PDList::size()
-{
-   return 0;
-}
+int PDList::size() { return 0; }
 
-PDPtr PDList::get(int i)
-{
-   return NULL;
-}
+PDPtr PDList::get(int i) { return NULL; }
 
-void PDList::addBack(PDPtr position)
-{
-}
+void PDList::addBack(PDPtr position) {}
 
-bool PDList::containsCoordinate(PDPtr position)
-{
-   return false;
-}
+bool PDList::containsCoordinate(PDPtr position) { return false; }
 
-void PDList::clear()
-{
-}
+void PDList::clear() {}

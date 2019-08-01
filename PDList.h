@@ -5,47 +5,47 @@
 #include "PositionDistance.h"
 #include "Types.h"
 
-class PDList
-{
-public:
-   /*                                           */
-   /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
-   /*                                           */
+class PDList {
+ public:
+  /*                                           */
+  /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
+  /*                                           */
 
-   // Create a New Empty List
-   PDList();
+  // Create a New Empty List
+  PDList();
 
-   // Clean-up the list
-   ~PDList();
+  // Clean-up the list
+  ~PDList();
 
-   // Number of items in the list
-   int size();
+  // Number of items in the list
+  int size();
 
-   // Get a pointer to the position-distance at index i
-   PDPtr get(int i);
+  // Get a pointer to the position-distance at index i
+  PDPtr get(int i);
 
-   // Add a position-distance (as a pointer) to the list
-   //    This class now has control over the pointer
-   //    And should delete the pointer if the position-distance is removed from the list
-   void addBack(PDPtr position);
+  // Add a position-distance (as a pointer) to the list
+  //    This class now has control over the pointer
+  //    And should delete the pointer if the position-distance is removed from
+  //    the list
+  void addBack(PDPtr position);
 
-   // Checks if the list contains a position-distance with the same co-ordinate
-   //    as the given position.
-   bool containsCoordinate(PDPtr position);
+  // Checks if the list contains a position-distance with the same co-ordinate
+  //    as the given position.
+  bool containsCoordinate(PDPtr position);
 
-   // Remove everything from the list
-   // Don't forget to clean-up the memory!
-   void clear();
+  // Remove everything from the list
+  // Don't forget to clean-up the memory!
+  void clear();
 
-   /*                                           */
-   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
-   /*                                           */
+  /*                                           */
+  /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
+  /*                                           */
 
-   /* This is a suggestion of what you could use. */
-   /* You can change this code.                   */
-private:
-   PDPtr positions[100];
-   int numPositions;
+  /* This is a suggestion of what you could use. */
+  /* You can change this code.                   */
+ private:
+  PDPtr positions[100];
+  int numPositions;
 };
 
-#endif // COSC_ASS_ONE_POSITION_LIST
+#endif  // COSC_ASS_ONE_POSITION_LIST
