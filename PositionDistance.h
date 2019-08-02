@@ -22,6 +22,8 @@ class PositionDistance {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+ private:
+  int PDTuple[3];
 };
 
 /*                                           */

@@ -40,6 +40,7 @@ class PDList {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+  void setNumPositions();
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */

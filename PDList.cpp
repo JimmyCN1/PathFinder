@@ -5,16 +5,54 @@
 #include <cstdlib>
 #include <iostream>
 
-PDList::PDList() {}
+#define POSITIONS_LENGTH 100
 
-PDList::~PDList() {}
+// constructor
+PDList::PDList() {
+  // NULL all values in initialised array
+  for (int i = 0; i < POSITIONS_LENGTH; i++) {
+    positions[i] = NULL;
+  }
+  // set initial numPositions
+  PDList::setNumPositions();
+}
 
-int PDList::size() { return 0; }
+// deconstructor
+PDList::~PDList() { delete positions[100]; }
 
-PDPtr PDList::get(int i) { return NULL; }
+// returns the number of indexes that contain positions
+int PDList::size() {
+  int size = 0;
+  for (int i = 0; i < POSITIONS_LENGTH; i++) {
+    if (positions[i] != NULL) {
+      size += 1;
+    }
+  }
+  return size;
+}
 
-void PDList::addBack(PDPtr position) {}
+// sets the numPositions property
+void PDList::setNumPositions() { PDList::numPositions = PDList::size(); }
 
-bool PDList::containsCoordinate(PDPtr position) { return false; }
+PDPtr PDList::get(int i) { return positions[i]; }
+
+void PDList::addBack(PDPtr position) {
+  positions[PDList::numPositions] = position;
+  setNumPositions();
+}
+
+bool PDList::containsCoordinate(PDPtr position) {
+  bool isContained = false;
+  int i = 0;
+  while (i < PDList::numPositions && isContained == false) {
+    if (position->getX() == positions[i]->getX() &&
+        position->getX() == positions[i]->getX() &&
+        position->getDistance() == positions[i]->getDistance()) {
+      isContained = true;
+    }
+    i++;
+  }
+  return isContained;
+}
 
 void PDList::clear() {}

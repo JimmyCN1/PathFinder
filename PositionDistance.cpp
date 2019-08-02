@@ -1,12 +1,6 @@
 
 #include "PositionDistance.h"
 
-class PositionDistance {
- private:
-  int posDis[3];
-
- public:
-  int getX() { return posDis[0]; }
-  int getY() { return posDis[1]; }
-  int getDistance() { return posDis[2]; }
-};
+int PositionDistance::getX() { return PDTuple[0]; }
+int PositionDistance::getY() { return PDTuple[1]; }
+int PositionDistance::getDistance() { return PDTuple[2]; }
