@@ -235,6 +235,7 @@ void load_data_pos(char **argv, DataPtr data) {
     std::regex regex("^[(]([0-9]+),([0-9]+),([0-9]+)[)]$");
     std::smatch match;
     bool ok = std::regex_match(line, match, regex);
+    std::cout << line << std::endl;
 
     if (ok) {
       MyPosition position;
