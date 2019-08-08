@@ -18,7 +18,11 @@ PDList::PDList() {
 }
 
 // deconstructor
-PDList::~PDList() { delete positions[100]; }
+PDList::~PDList() {
+  for (int i = 0; i < POSITIONS_LENGTH; i++) {
+    delete positions[i];
+  }
+}
 
 // returns the number of indexes that contain positions
 int PDList::size() {
