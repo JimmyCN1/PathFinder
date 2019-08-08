@@ -34,6 +34,11 @@ class PathPlanning {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+  Grid maze;
+  int rows;
+  int cols;
+  int initialX;
+  int initialY;
 };
 
 #endif  // COSC_ASS_ONE_PATH_PLANNING

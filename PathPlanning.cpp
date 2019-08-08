@@ -5,11 +5,18 @@
 #include <cstdlib>
 #include <iostream>
 
-PathPlanning::PathPlanning(Grid maze, int rows, int cols) {}
+PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
+  this->maze = maze;
+  this->rows = rows;
+  this->cols = cols;
+}
 
-PathPlanning::~PathPlanning() {}
+PathPlanning::~PathPlanning() { delete maze; }
 
-void PathPlanning::initialPosition(int x, int y) {}
+void PathPlanning::initialPosition(int x, int y) {
+  initialX = x;
+  initialY = y;
+}
 
 PDList *PathPlanning::getReachablePositions() { return NULL; }
 

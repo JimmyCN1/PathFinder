@@ -4,6 +4,8 @@
 
 #include "Types.h"
 
+#include <tuple>
+
 class PositionDistance {
  public:
   /*                                           */
@@ -23,7 +25,7 @@ class PositionDistance {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
  private:
-  int PDTuple[3];
+  std::tuple<int, int, int> PDTuple;
 };
 
 /*                                           */
@@ -31,5 +33,6 @@ class PositionDistance {
 /*                                           */
 // Pointer to a Position-Distance
 typedef PositionDistance* PDPtr;
+typedef std::tuple<int, int, int> PDTuple;
 
 #endif  // COSC_ASS_ONE_POSITION

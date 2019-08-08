@@ -11,7 +11,7 @@
 PDList::PDList() {
   // NULL all values in initialised array
   for (int i = 0; i < POSITIONS_LENGTH; i++) {
-    positions[i] = NULL;
+    positions[i] = nullptr;
   }
   // set initial numPositions
   PDList::setNumPositions();
@@ -28,7 +28,7 @@ PDList::~PDList() {
 int PDList::size() {
   int size = 0;
   for (int i = 0; i < POSITIONS_LENGTH; i++) {
-    if (positions[i] != NULL) {
+    if (positions[i] != nullptr) {
       size += 1;
     }
   }
@@ -53,8 +53,9 @@ bool PDList::containsCoordinate(PDPtr position) {
         position->getX() == positions[i]->getX() &&
         position->getDistance() == positions[i]->getDistance()) {
       isContained = true;
+    } else {
+      i++;
     }
-    i++;
   }
   return isContained;
 }
