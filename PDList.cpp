@@ -49,33 +49,38 @@ void PDList::addBack(PDPtr position) {
   std::cout << "added" << std::endl;
 }
 
-bool PDList::containsCoordinateFromArray(PDList* coordinates) {
-  bool containsNone = false;
+bool PDList::containsAllCoordinateFromArray(PDList* coordinates) {
+  bool hasCoordinates = true;
   if (numPositions != EMPTY) {
     int i = 0;
-    while (i < coordinates->size() && containsNone == false) {
-      if (this->containsCoordinate(coordinates->get(i))) {
-        containsNone = true;
+    int size = coordinates->size();
+    while (i < size && hasCoordinates == true) {
+      if (!this->containsCoordinate(coordinates->get(i))) {
+        hasCoordinates = false;
       } else {
         i++;
       }
     }
   }
-  return containsNone;
+  return hasCoordinates;
 }
 
 bool PDList::containsCoordinate(PDPtr position) {
   bool isContained = false;
   if (numPositions != EMPTY) {
     int i = 0;
-    while (i < PDList::numPositions && isContained == false) {
+    while (i < numPositions && isContained == false) {
+      std::cout << positions[i]->getPositionDistance() << std::endl;
       if (position->getX() == positions[i]->getX() &&
-          position->getX() == positions[i]->getX() &&
-          position->getDistance() == positions[i]->getDistance()) {
+          position->getY() == positions[i]->getY())
+      //  &&
+      // position->getDistance() == positions[i]->getDistance())
+      {
         isContained = true;
       } else {
         i++;
       }
+      std::cout << "isContained? " << isContained << std::endl;
     }
   }
   return isContained;

@@ -43,7 +43,7 @@ class PDList {
   /*                                           */
   void setNumPositions();
 
-  bool containsCoordinateFromArray(PDList* coordinates);
+  bool containsAllCoordinateFromArray(PDList* coordinates);
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */

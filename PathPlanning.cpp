@@ -44,82 +44,91 @@ void PathPlanning::initialPosition(int x, int y) {
 }
 
 PDList* PathPlanning::getReachablePositions() {
+  // initialisation
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* reachablePositions = new PDList;
   PDList* tempPositions = new PDList;
   PDPtr currentSelection = nullptr;
+
+  // P initially containing x (initial position)
   reachablePositions->addBack(startingPoint);
 
-  while (!tempPositions->containsCoordinateFromArray(reachablePositions)) {
+  do {
     std::cout << "hiyaaaaaa" << std::endl;
     int iterations = reachablePositions->size();
     for (int i = 0; i < iterations; i++) {
       std::cout << "new round" << std::endl;
-      // if (!tempPositions->containsCoordinate(reachablePositions->get(i))) {
       currentSelection = reachablePositions->get(i);
-      // }
-
-      // check up
-      if (maze[currentSelection->getY() - ONE_STEP][currentSelection->getX()] ==
-          '.') {
-        PDPtr nextPosition = new PositionDistance(
-            currentSelection->getX(), currentSelection->getY() - ONE_STEP,
-            currentSelection->getDistance() + ONE_STEP);
-        std::cout << " up " << nextPosition->getPositionDistance() << std::endl;
-        if (!reachablePositions->containsCoordinate(nextPosition)) {
-          reachablePositions->addBack(nextPosition);
+      if (!tempPositions->containsCoordinate(currentSelection)) {
+        // check up
+        if (maze[currentSelection->getY() - ONE_STEP]
+                [currentSelection->getX()] == '.') {
+          PDPtr nextPosition = new PositionDistance(
+              currentSelection->getX(), currentSelection->getY() - ONE_STEP,
+              currentSelection->getDistance() + ONE_STEP);
+          std::cout << " up " << nextPosition->getPositionDistance()
+                    << std::endl;
+          if (!reachablePositions->containsCoordinate(nextPosition)) {
+            reachablePositions->addBack(nextPosition);
+          }
         }
-      }
-      // check down
-      if (maze[currentSelection->getY() + ONE_STEP][currentSelection->getX()] ==
-          '.') {
-        PDPtr nextPosition = new PositionDistance(
-            currentSelection->getX(), currentSelection->getY() - ONE_STEP,
-            currentSelection->getDistance() + ONE_STEP);
-        std::cout << " down " << nextPosition->getPositionDistance()
+        // // check down
+        // if (maze[currentSelection->getY() + ONE_STEP]
+        //         [currentSelection->getX()] == '.') {
+        //   PDPtr nextPosition = new PositionDistance(
+        //       currentSelection->getX(), currentSelection->getY() + ONE_STEP,
+        //       currentSelection->getDistance() + ONE_STEP);
+        //   std::cout << " down " << nextPosition->getPositionDistance()
+        //             << std::endl;
+        //   if (!reachablePositions->containsCoordinate(nextPosition)) {
+        //     reachablePositions->addBack(nextPosition);
+        //   }
+        // }
+        // check left
+        std::cout << "NEXT SPOT ON MAZE: "
+                  << maze[currentSelection->getY()]
+                         [currentSelection->getX() - ONE_STEP]
                   << std::endl;
-        if (!reachablePositions->containsCoordinate(nextPosition)) {
-          reachablePositions->addBack(nextPosition);
+        if (maze[currentSelection->getY()]
+                [currentSelection->getX() - ONE_STEP] == '.') {
+          PDPtr nextPosition = new PositionDistance(
+              currentSelection->getX() - ONE_STEP, currentSelection->getY(),
+              currentSelection->getDistance() + ONE_STEP);
+          std::cout << " left " << nextPosition->getPositionDistance()
+                    << std::endl;
+          std::cout << "add new position?" << std::endl;
+          if (!reachablePositions->containsCoordinate(nextPosition)) {
+            reachablePositions->addBack(nextPosition);
+            std::cout << "new position added" << std::endl;
+          }
         }
-      }
-      // check left
-      std::cout
-          << maze[currentSelection->getY()][currentSelection->getX() - ONE_STEP]
-          << std::endl;
-      if (maze[currentSelection->getY()][currentSelection->getX() - ONE_STEP] ==
-          '.') {
-        PDPtr nextPosition = new PositionDistance(
-            currentSelection->getX() - ONE_STEP, currentSelection->getY(),
-            currentSelection->getDistance() + ONE_STEP);
-        std::cout << " left " << nextPosition->getPositionDistance()
-                  << std::endl;
-        std::cout << "add new position?" << std::endl;
-        if (!reachablePositions->containsCoordinate(nextPosition)) {
-          reachablePositions->addBack(nextPosition);
-          std::cout << "new position added" << std::endl;
-        }
-      }
-      // check right
-      if (maze[currentSelection->getY()][currentSelection->getX() + ONE_STEP] ==
-          '.') {
-        PDPtr nextPosition = new PositionDistance(
-            currentSelection->getX(), currentSelection->getY() - ONE_STEP,
-            currentSelection->getDistance() + ONE_STEP);
-        std::cout << " right " << nextPosition->getPositionDistance()
-                  << std::endl;
-        if (!reachablePositions->containsCoordinate(nextPosition)) {
-          reachablePositions->addBack(nextPosition);
-        }
+        // // check right
+        // if (maze[currentSelection->getY()]
+        //         [currentSelection->getX() + ONE_STEP] == '.') {
+        //   PDPtr nextPosition = new PositionDistance(
+        //       currentSelection->getX() + ONE_STEP, currentSelection->getY(),
+        //       currentSelection->getDistance() + ONE_STEP);
+        //   std::cout << " right " << nextPosition->getPositionDistance()
+        //             << std::endl;
+        //   if (!reachablePositions->containsCoordinate(nextPosition)) {
+        //     reachablePositions->addBack(nextPosition);
+        //   }
+        // }
       }
     }
     tempPositions->addBack(currentSelection);
-  }
-  std::cout << "getting reachable postions" << std::endl;
-  for (int i = 0; i < reachablePositions->size(); i++) {
-    std::cout << "reachable : "
-              << reachablePositions->get(i)->getPositionDistance() << std::endl;
-  }
+
+    std::cout << "getting reachable postions" << std::endl;
+    for (int i = 0; i < reachablePositions->size(); i++) {
+      std::cout << "reachable : "
+                << reachablePositions->get(i)->getPositionDistance()
+                << std::endl
+                << std::endl;
+    }
+
+  } while (!tempPositions->containsAllCoordinateFromArray(reachablePositions));
+
   // for (int i = 0; i < rows; i++) {
   //   for (int j = 0; j < cols; j++) {
   //     if (this->maze[i][j] == '.') {
