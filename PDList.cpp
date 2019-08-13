@@ -5,40 +5,40 @@
 #include <cstdlib>
 #include <iostream>
 
-#define POSITIONS_LENGTH 100
-
 // constructor
 PDList::PDList() {
-  // NULL all values in initialised array
-  for (int i = 0; i < POSITIONS_LENGTH; i++) {
+  // creates list and sets all to nullptr
+  std::cout << "1" << std::endl;
+  for (int i = 0; i < MAX_POSITIONS; i++) {
     positions[i] = nullptr;
   }
   // set initial numPositions
-  PDList::setNumPositions();
+  // PDList::setNumPositions();
+  numPositions = 0;
 }
 
 // deconstructor
 PDList::~PDList() {
-  for (int i = 0; i < POSITIONS_LENGTH; i++) {
-    delete positions[i];
-  }
+  clear();
 }
 
 // returns the number of indexes that contain positions
 int PDList::size() {
   int size = 0;
-  for (int i = 0; i < POSITIONS_LENGTH; i++) {
-    if (positions[i] != nullptr) {
-      size += 1;
-    }
+  while (positions[size] != nullptr) {
+    size++;
   }
   return size;
 }
 
 // sets the numPositions property
-void PDList::setNumPositions() { PDList::numPositions = PDList::size(); }
+void PDList::setNumPositions() {
+  PDList::numPositions = PDList::size();
+}
 
-PDPtr PDList::get(int i) { return positions[i]; }
+PDPtr PDList::get(int i) {
+  return positions[i];
+}
 
 void PDList::addBack(PDPtr position) {
   positions[PDList::numPositions] = position;
@@ -60,4 +60,9 @@ bool PDList::containsCoordinate(PDPtr position) {
   return isContained;
 }
 
-void PDList::clear() {}
+void PDList::clear() {
+  // deletes all PDPtrs in the array
+  for (int i = 0; i < MAX_POSITIONS; i++) {
+    delete positions[i];
+  }
+}

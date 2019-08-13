@@ -1,6 +1,29 @@
 
 #include "PositionDistance.h"
 
-int PositionDistance::getX() { return std::get<0>(PDTuple); }
-int PositionDistance::getY() { return std::get<1>(PDTuple); }
-int PositionDistance::getDistance() { return std::get<2>(PDTuple); }
+PositionDistance::PositionDistance(int x, int y, int dist) {
+  this->x = x;
+  this->y = y;
+  this->dist = dist;
+}
+
+PositionDistance::PositionDistance() {
+  this->x = 0;
+  this->y = 0;
+  this->dist = 0;
+}
+
+int PositionDistance::getX() {
+  return this->x;
+}
+int PositionDistance::getY() {
+  return this->y;
+}
+int PositionDistance::getDistance() {
+  return this->dist;
+}
+
+std::string PositionDistance::getPositionDistance() {
+  return "PosiDistance__ x: " + std::to_string(x) +
+         ", y: " + std::to_string(y) + ", dist: " + std::to_string(dist);
+}

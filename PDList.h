@@ -1,6 +1,7 @@
 
 #ifndef COSC_ASS_ONE_POSITION_LIST
 #define COSC_ASS_ONE_POSITION_LIST
+#define MAX_POSITIONS 55
 
 #include "PositionDistance.h"
 #include "Types.h"
@@ -45,7 +46,7 @@ class PDList {
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
  private:
-  PDPtr positions[100];
+  PDPtr positions[MAX_POSITIONS];
   int numPositions;
 };
 
