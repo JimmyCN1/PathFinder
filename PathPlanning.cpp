@@ -1,7 +1,8 @@
 
 #define EMPTY 0
 #define INITIAL_DISTANCE 0
-#define ONE_STEP 1
+#define NO_STEP 0
+#define STEP 1
 
 #include "PathPlanning.h"
 
@@ -40,7 +41,6 @@ PathPlanning::~PathPlanning() {
 void PathPlanning::initialPosition(int x, int y) {
   this->initialX = x;
   this->initialY = y;
-  // PDPtr
 }
 
 PDList* PathPlanning::getReachablePositions() {
@@ -58,63 +58,18 @@ PDList* PathPlanning::getReachablePositions() {
     std::cout << "hiyaaaaaa" << std::endl;
     int iterations = reachablePositions->size();
     for (int i = 0; i < iterations; i++) {
-      std::cout << "new round" << std::endl;
+      std::cout << "~~~~~~~~~~~`new round~~~~~~~~~~~~" << std::endl
+                << std::endl;
       currentSelection = reachablePositions->get(i);
       if (!tempPositions->containsCoordinate(currentSelection)) {
         // check up
-        if (maze[currentSelection->getY() - ONE_STEP]
-                [currentSelection->getX()] == '.') {
-          PDPtr nextPosition = new PositionDistance(
-              currentSelection->getX(), currentSelection->getY() - ONE_STEP,
-              currentSelection->getDistance() + ONE_STEP);
-          std::cout << " up " << nextPosition->getPositionDistance()
-                    << std::endl;
-          if (!reachablePositions->containsCoordinate(nextPosition)) {
-            reachablePositions->addBack(nextPosition);
-          }
-        }
-        // // check down
-        // if (maze[currentSelection->getY() + ONE_STEP]
-        //         [currentSelection->getX()] == '.') {
-        //   PDPtr nextPosition = new PositionDistance(
-        //       currentSelection->getX(), currentSelection->getY() + ONE_STEP,
-        //       currentSelection->getDistance() + ONE_STEP);
-        //   std::cout << " down " << nextPosition->getPositionDistance()
-        //             << std::endl;
-        //   if (!reachablePositions->containsCoordinate(nextPosition)) {
-        //     reachablePositions->addBack(nextPosition);
-        //   }
-        // }
+        checkStep(NO_STEP, -STEP, currentSelection, reachablePositions);
+        // check down
+        checkStep(NO_STEP, STEP, currentSelection, reachablePositions);
         // check left
-        std::cout << "NEXT SPOT ON MAZE: "
-                  << maze[currentSelection->getY()]
-                         [currentSelection->getX() - ONE_STEP]
-                  << std::endl;
-        if (maze[currentSelection->getY()]
-                [currentSelection->getX() - ONE_STEP] == '.') {
-          PDPtr nextPosition = new PositionDistance(
-              currentSelection->getX() - ONE_STEP, currentSelection->getY(),
-              currentSelection->getDistance() + ONE_STEP);
-          std::cout << " left " << nextPosition->getPositionDistance()
-                    << std::endl;
-          std::cout << "add new position?" << std::endl;
-          if (!reachablePositions->containsCoordinate(nextPosition)) {
-            reachablePositions->addBack(nextPosition);
-            std::cout << "new position added" << std::endl;
-          }
-        }
-        // // check right
-        // if (maze[currentSelection->getY()]
-        //         [currentSelection->getX() + ONE_STEP] == '.') {
-        //   PDPtr nextPosition = new PositionDistance(
-        //       currentSelection->getX() + ONE_STEP, currentSelection->getY(),
-        //       currentSelection->getDistance() + ONE_STEP);
-        //   std::cout << " right " << nextPosition->getPositionDistance()
-        //             << std::endl;
-        //   if (!reachablePositions->containsCoordinate(nextPosition)) {
-        //     reachablePositions->addBack(nextPosition);
-        //   }
-        // }
+        checkStep(-STEP, NO_STEP, currentSelection, reachablePositions);
+        // check right
+        checkStep(+STEP, NO_STEP, currentSelection, reachablePositions);
       }
     }
     tempPositions->addBack(currentSelection);
@@ -129,24 +84,7 @@ PDList* PathPlanning::getReachablePositions() {
 
   } while (!tempPositions->containsAllCoordinateFromArray(reachablePositions));
 
-  // for (int i = 0; i < rows; i++) {
-  //   for (int j = 0; j < cols; j++) {
-  //     if (this->maze[i][j] == '.') {
-  //       std::cout << "(" << j << ", " << i << ")" << std::endl;
-  //     }
-  //   }
-  // }
-  // PDPtr first = new PositionDistance(6, 2, 1);
-  // PDPtr dummy = new PositionDistance(5, 2, 2);
-  // PDPtr third = new PositionDistance(4, 2, 3);
-  // PDPtr fourth = new PositionDistance(4, 1, 4);
-  // std::cout << "we made it" << std::endl;
-  // add dummys to array
-  // reachablePositions->addBack(first);
-  // reachablePositions->addBack(dummy);
-  // reachablePositions->addBack(third);
-  // reachablePositions->addBack(fourth);
-  // print dummy reachable positions
+  // print reachable positions
   for (int i = 0; i < reachablePositions->size(); i++) {
     std::cout << reachablePositions->get(i)->getPositionDistance() << " ";
   }
@@ -159,4 +97,27 @@ PDList* PathPlanning::getReachablePositions() {
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(int toX, int toY) {
   return NULL;
+}
+
+void PathPlanning::checkStep(int xStep,
+                             int yStep,
+                             PDPtr currentSelection,
+                             PDList* reachablePositions) {
+  std::cout << "NEXT SPOT ON MAZE: "
+            << maze[currentSelection->getY() + yStep]
+                   [currentSelection->getX() + xStep]
+            << std::endl;
+  if (maze[currentSelection->getY() + yStep]
+          [currentSelection->getX() + xStep] == '.') {
+    PDPtr nextPosition = new PositionDistance(
+        currentSelection->getX() + xStep, currentSelection->getY() + yStep,
+        currentSelection->getDistance() + STEP);
+    std::cout << "xStep: " << xStep << "yStep: " << yStep << std::endl
+              << nextPosition->getPositionDistance() << std::endl;
+    std::cout << "add new position?" << std::endl;
+    if (!reachablePositions->containsCoordinate(nextPosition)) {
+      reachablePositions->addBack(nextPosition);
+      std::cout << "new position added" << std::endl;
+    }
+  }
 }

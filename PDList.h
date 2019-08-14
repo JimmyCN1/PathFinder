@@ -47,6 +47,7 @@ class PDList {
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
+
  private:
   PDPtr positions[MAX_POSITIONS];
   int numPositions;

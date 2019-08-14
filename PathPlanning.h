@@ -34,6 +34,12 @@ class PathPlanning {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+
+  void checkStep(int xStep,
+                 int yStep,
+                 PDPtr currentSelection,
+                 PDList* reachablePositions);
+
   Grid maze;
   int rows;
   int cols;
