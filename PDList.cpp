@@ -14,7 +14,6 @@ PDList::PDList() {
     positions[i] = nullptr;
   }
   // set initial numPositions
-  // PDList::setNumPositions();
   numPositions = 0;
 }
 
@@ -32,22 +31,13 @@ int PDList::size() {
   return size;
 }
 
-// sets the numPositions property
-// void PDList::setNumPositions() {
-//   PDList::numPositions = PDList::size();
-// }
-
 PDPtr PDList::get(int i) {
   return positions[i];
 }
 
 void PDList::addBack(PDPtr position) {
-  std::cout << "adding " << position->getPositionDistance() << " to list"
-            << std::endl;
   positions[PDList::numPositions] = position;
-  // setNumPositions();
   numPositions++;
-  std::cout << "added" << std::endl;
 }
 
 bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
@@ -63,8 +53,6 @@ bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
       }
     }
   }
-  std::cout << "has all coordinates ___________ _________________ "
-            << hasCoordinates << std::endl;
   return hasCoordinates;
 }
 
@@ -73,20 +61,12 @@ bool PDList::containsCoordinate(PDPtr position) {
   if (numPositions != EMPTY) {
     int i = 0;
     while (i < numPositions && isContained == false) {
-      std::cout << "numPositions: " << numPositions << std::endl;
-      std::cout << "i: " << i << std::endl;
-      std::cout << positions[i]->getPositionDistance() << " vs "
-                << position->getPositionDistance() << std::endl;
       if (position->getX() == positions[i]->getX() &&
           position->getY() == positions[i]->getY()) {
         isContained = true;
-        std::cout << "contained = true!!" << std::endl;
       } else {
-        // std::cout << i << std::endl;
-        std::cout << "contained = false!!" << std::endl;
         i++;
       }
-      // std::cout << "isContained? " << isContained << std::endl;
     };
   }
   return isContained;
