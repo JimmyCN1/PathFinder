@@ -35,6 +35,9 @@ class PathPlanning {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
 
+  // goes to one of the four possible next positions in th maze
+  // and checks to see if they are traversable
+  // if true, they are added to the reachable list
   void checkStep(int xStep,
                  int yStep,
                  PDPtr currentSelection,

@@ -1,7 +1,7 @@
 
 #ifndef COSC_ASS_ONE_POSITION_LIST
 #define COSC_ASS_ONE_POSITION_LIST
-#define MAX_POSITIONS 55
+#define MAX_POSITIONS 91
 
 #include "PositionDistance.h"
 #include "Types.h"
@@ -43,7 +43,7 @@ class PDList {
   /*                                           */
   void setNumPositions();
 
-  bool containsAllCoordinateFromArray(PDList* coordinates);
+  bool containsAllCoordinatesFromArray(PDList* coordinates);
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
