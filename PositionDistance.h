@@ -26,6 +26,8 @@ class PositionDistance {
   /*                                           */
   PositionDistance(int x, int y, int dist);
 
+  PositionDistance(PositionDistance* originalPositionDistance);
+
   PositionDistance();
 
   std::string getPositionDistance();

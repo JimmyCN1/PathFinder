@@ -7,6 +7,12 @@ PositionDistance::PositionDistance(int x, int y, int dist) {
   this->dist = dist;
 }
 
+PositionDistance::PositionDistance(PositionDistance* originalPositionDistance) {
+  this->x = originalPositionDistance->getX();
+  this->y = originalPositionDistance->getY();
+  this->dist = originalPositionDistance->getDistance();
+}
+
 PositionDistance::PositionDistance() {
   this->x = 0;
   this->y = 0;

@@ -67,8 +67,11 @@ PDList* PathPlanning::getReachablePositions() {
 
   PDList* deepCopyReachablePositions = new PDList;
   for (int i = 1; i < reachablePositions->size(); i++) {
-    deepCopyReachablePositions->addBack(reachablePositions->get(i));
+    deepCopyReachablePositions->addBack(
+        new PositionDistance(reachablePositions->get(i)));
   }
+
+  delete reachablePositions;
 
   return deepCopyReachablePositions;
 }

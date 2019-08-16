@@ -9,7 +9,6 @@
 // constructor
 PDList::PDList() {
   // creates list and sets all to nullptr
-  std::cout << "1" << std::endl;
   for (int i = 0; i < MAX_POSITIONS; i++) {
     positions[i] = nullptr;
   }
@@ -77,4 +76,5 @@ void PDList::clear() {
   for (int i = 0; i < MAX_POSITIONS; i++) {
     delete positions[i];
   }
+  // delete[] positions;
 }
