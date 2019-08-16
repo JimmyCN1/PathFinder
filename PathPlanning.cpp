@@ -18,19 +18,6 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
     this->rows = rows;
     this->cols = cols;
   }
-  // // print grid
-  // for (int i = 0; i < rows; i++) {
-  //   for (int j = 0; j < cols; j++) {
-  //     std::cout << maze[i][j];
-  //   }
-  //   std::cout << std::endl;
-  // }
-  // if (rows > EMPTY && cols > EMPTY) {
-  //   grid = new char*[rows];
-  //   for (int i = 0; i < rows; i++) {
-  //     grid[i] = new char[cols];
-  //   }
-  // }
 }
 
 PathPlanning::~PathPlanning() {
@@ -75,14 +62,6 @@ PDList* PathPlanning::getReachablePositions() {
         tempPositions->addBack(currentSelection);
       }
     }
-
-    // std::cout << "getting reachable postions" << std::endl;
-
-    // for (int i = 0; i < tempPositions->size(); i++) {
-    //   std::cout << "temp : " << tempPositions->get(i)->getPositionDistance()
-    //             << std::endl
-    //             << std::endl;
-    // }
 
   } while (!tempPositions->containsAllCoordinatesFromArray(reachablePositions));
 
