@@ -72,11 +72,6 @@ PDList* PathPlanning::getReachablePositions() {
   }
 
   delete reachablePositions;
-  for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
-    std::cout << i << ": "
-              << deepCopyReachablePositions->get(i)->getPositionDistance()
-              << std::endl;
-  }
 
   return deepCopyReachablePositions;
 }
@@ -84,24 +79,28 @@ PDList* PathPlanning::getReachablePositions() {
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(int toX, int toY) {
+  // initialisation
+  PDPtr startingPoint =
+      new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* quickestPath = new PDList();
   PDList* reachablePositions = getReachablePositions();
+
+  // P initially containing x (initial position)
+  quickestPath->addBack(startingPoint);
+
   for (int i = 0; i < reachablePositions->size(); i++) {
     PDPtr position = reachablePositions->get(i);
+    PDPtr previousPosition;
     if (i == 0) {
-      if (isCloserToGoal(position,
-                         new PositionDistance(this->initialX, this->initialY,
-                                              INITIAL_DISTANCE),
-                         toX, toY)) {
-        quickestPath->addBack(new PositionDistance(position));
-      }
+      previousPosition = startingPoint;
     } else {
-      PDPtr previousPosition = reachablePositions->get(i - 1);
-      if (isCloserToGoal(position, previousPosition, toX, toY)) {
-        quickestPath->addBack(new PositionDistance(position));
-      }
+      previousPosition = quickestPath->get(quickestPath->size() - 1);
+    }
+    if (isCloserToGoal(position, previousPosition, toX, toY)) {
+      quickestPath->addBack(new PositionDistance(position));
     }
   }
+
   return quickestPath;
 }
 
@@ -127,10 +126,24 @@ bool PathPlanning::isCloserToGoal(PositionDistance* position,
                                   PositionDistance* previousPosition,
                                   int goalX,
                                   int goalY) {
-  std::cout << "made it";
   bool isCloser = false;
-  if ((position->getX() - goalX) < (previousPosition->getX() - goalX) ||
-      (position->getY() - goalY) < (previousPosition->getY() - goalY)) {
+
+  if ((std::abs(previousPosition->getX() - goalX) >
+       std::abs(position->getX() - goalX)) ||
+      (std::abs(previousPosition->getY() - goalY) >
+       std::abs(position->getY() - goalY))) {
+    std::cout << "prev pos: " << previousPosition->getPositionDistance()
+              << std::endl;
+    std::cout << "position: " << position->getPositionDistance() << std::endl;
+    std::cout << "goal: " << goalX << "," << goalY << std::endl;
+    std::cout << "x prev abs: " << std::abs(previousPosition->getX() - goalX)
+              << std::endl;
+    std::cout << "x curr abs: " << std::abs(position->getX() - goalX)
+              << std::endl;
+    std::cout << "y prev abs: " << std::abs(previousPosition->getY() - goalY)
+              << std::endl;
+    std::cout << "y curr abs: " << std::abs(position->getY() - goalY)
+              << std::endl;
     isCloser = true;
   }
   return isCloser;
