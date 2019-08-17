@@ -5,6 +5,8 @@
 #define STEP 1
 #define FORWARD_STEP 1
 #define BACKWARCK_STEP -1
+#define FIRST_POSITION 0
+#define FIRST_STEP 1
 
 #include "PathPlanning.h"
 
@@ -21,7 +23,7 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
 }
 
 PathPlanning::~PathPlanning() {
-  for (int i = 0; i < rows; i++) {
+  for (int i = FIRST_POSITION; i < rows; i++) {
     delete maze[i];
   }
   delete maze;
@@ -45,7 +47,7 @@ PDList* PathPlanning::getReachablePositions() {
 
   do {
     int iterations = reachablePositions->size();
-    for (int i = 0; i < iterations; i++) {
+    for (int i = FIRST_POSITION; i < iterations; i++) {
       currentSelection = reachablePositions->get(i);
       if (!tempPositions->containsCoordinate(currentSelection)) {
         // check one step up
@@ -66,9 +68,10 @@ PDList* PathPlanning::getReachablePositions() {
   } while (!tempPositions->containsAllCoordinatesFromArray(reachablePositions));
 
   PDList* deepCopyReachablePositions = new PDList();
-  for (int i = 1; i < reachablePositions->size(); i++) {
+  for (int i = FIRST_STEP; i < reachablePositions->size(); i++) {
     deepCopyReachablePositions->addBack(
         new PositionDistance(reachablePositions->get(i)));
+    std::cout << reachablePositions->get(i)->getPositionDistance() << std::endl;
   }
 
   delete reachablePositions;
@@ -80,24 +83,39 @@ PDList* PathPlanning::getReachablePositions() {
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(int toX, int toY) {
   // initialisation
+  bool goalReached = false;
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* quickestPath = new PDList();
   PDList* reachablePositions = getReachablePositions();
 
-  // P initially containing x (initial position)
+  // add starting point to thie quickest path array
   quickestPath->addBack(startingPoint);
 
-  for (int i = 0; i < reachablePositions->size(); i++) {
-    PDPtr position = reachablePositions->get(i);
+  for (int i = FIRST_POSITION; i < reachablePositions->size(); i++) {
+    PDPtr nextPosition = reachablePositions->get(i);
     PDPtr previousPosition;
-    if (i == 0) {
+    if (i == FIRST_POSITION) {
       previousPosition = startingPoint;
     } else {
       previousPosition = quickestPath->get(quickestPath->size() - 1);
     }
-    if (isCloserToGoal(position, previousPosition, toX, toY)) {
-      quickestPath->addBack(new PositionDistance(position));
+    // add next position
+    // if the next position has same distance but is closer to the goal,
+    // replace the last added position with the new position
+    if (!goalReached) {
+      if (nextPosition->getDistance() > previousPosition->getDistance()) {
+        quickestPath->addBack(nextPosition);
+      } else if (nextPosition->getDistance() ==
+                 previousPosition->getDistance()) {
+        if (isCloserToGoal(nextPosition, previousPosition, toX, toY)) {
+          quickestPath->setLast(nextPosition);
+        }
+      }
+    }
+    // check to see if goal is reached
+    if (nextPosition->getX() == toX && nextPosition->getY() == toY) {
+      goalReached = true;
     }
   }
 
@@ -122,29 +140,30 @@ void PathPlanning::checkStep(int xStep,
   }
 }
 
-bool PathPlanning::isCloserToGoal(PositionDistance* position,
+bool PathPlanning::isCloserToGoal(PositionDistance* nextPosition,
                                   PositionDistance* previousPosition,
                                   int goalX,
                                   int goalY) {
   bool isCloser = false;
-
   if ((std::abs(previousPosition->getX() - goalX) >
-       std::abs(position->getX() - goalX)) ||
+       std::abs(nextPosition->getX() - goalX)) ||
       (std::abs(previousPosition->getY() - goalY) >
-       std::abs(position->getY() - goalY))) {
+       std::abs(nextPosition->getY() - goalY))) {
     std::cout << "prev pos: " << previousPosition->getPositionDistance()
               << std::endl;
-    std::cout << "position: " << position->getPositionDistance() << std::endl;
+    std::cout << "position: " << nextPosition->getPositionDistance()
+              << std::endl;
     std::cout << "goal: " << goalX << "," << goalY << std::endl;
     std::cout << "x prev abs: " << std::abs(previousPosition->getX() - goalX)
               << std::endl;
-    std::cout << "x curr abs: " << std::abs(position->getX() - goalX)
+    std::cout << "x curr abs: " << std::abs(nextPosition->getX() - goalX)
               << std::endl;
     std::cout << "y prev abs: " << std::abs(previousPosition->getY() - goalY)
               << std::endl;
-    std::cout << "y curr abs: " << std::abs(position->getY() - goalY)
+    std::cout << "y curr abs: " << std::abs(nextPosition->getY() - goalY)
               << std::endl;
     isCloser = true;
   }
+
   return isCloser;
 }

@@ -34,6 +34,10 @@ PDPtr PDList::get(int i) {
   return positions[i];
 }
 
+void PDList::setLast(PDPtr position) {
+  this->positions[this->numPositions - 1] = position;
+}
+
 void PDList::addBack(PDPtr position) {
   positions[PDList::numPositions] = position;
   numPositions++;
