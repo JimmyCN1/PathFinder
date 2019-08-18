@@ -4,9 +4,11 @@
 #define NO_STEP 0
 #define STEP 1
 #define FORWARD_STEP 1
-#define BACKWARCK_STEP -1
+#define BACKWARD_STEP -1
 #define FIRST_POSITION 0
 #define FIRST_STEP 1
+#define NO_PATH 0
+#define SINGLE_PATH 2
 
 #include "PathPlanning.h"
 
@@ -50,17 +52,7 @@ PDList* PathPlanning::getReachablePositions() {
     for (int i = FIRST_POSITION; i < iterations; i++) {
       currentSelection = reachablePositions->get(i);
       if (!tempPositions->containsCoordinate(currentSelection)) {
-        // check one step up
-        checkStep(NO_STEP, BACKWARCK_STEP, currentSelection,
-                  reachablePositions);
-        // check one step down
-        checkStep(NO_STEP, FORWARD_STEP, currentSelection, reachablePositions);
-        // check one step left
-        checkStep(BACKWARCK_STEP, NO_STEP, currentSelection,
-                  reachablePositions);
-        // check one step right
-        checkStep(FORWARD_STEP, NO_STEP, currentSelection, reachablePositions);
-
+        setReachablePositions(currentSelection, reachablePositions);
         tempPositions->addBack(currentSelection);
       }
     }
@@ -87,11 +79,16 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* quickestPath = new PDList();
-  // PDList* options = new PDList();
   PDList* reachablePositions = getReachablePositions();
 
   // add starting point to thie quickest path array
   quickestPath->addBack(startingPoint);
+
+  bool isGoalReached = false;
+  // while (!isGoalReached) {
+  PDList* alreadyTraversed = new PDList();
+  // int forkDistances[this->rows * this->cols];
+  // int forkDistance = EMPTY;
 
   for (int i = FIRST_POSITION; i < reachablePositions->size(); i++) {
     PDPtr nextPosition = reachablePositions->get(i);
@@ -104,40 +101,101 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
     // add next position
     // if the next position has same distance but is closer to the goal,
     // replace the last added position with the new position
-    if (!goalReached(previousPosition, toX, toY)) {
+    isGoalReached = goalReached(previousPosition, toX, toY);
+    if (!isGoalReached) {
       if (oneStep(nextPosition, previousPosition)) {
-        if (nextPosition->getDistance() - previousPosition->getDistance() ==
-            STEP) {
-          quickestPath->addBack(nextPosition);
-        } else if (nextPosition->getDistance() ==
-                   previousPosition->getDistance()) {
-          if (oneStepCloser(nextPosition, previousPosition, toX, toY)) {
-            quickestPath->setLast(nextPosition);
-          }
+        // if (nextPosition->getDistance() - previousPosition->getDistance()
+        // ==
+        //     STEP) {
+        quickestPath->addBack(nextPosition);
+        // }
+        if (singlePath(nextPosition, previousPosition)) {
+          alreadyTraversed->addBack(previousPosition);
         }
+      }
+      if (nextPosition->getDistance() == previousPosition->getDistance() &&
+          (oneStepCloser(nextPosition, previousPosition, toX, toY))) {
+        quickestPath->setLast(nextPosition);
       }
     }
   }
-
+  // }
+  for (int i = 0; i < alreadyTraversed->size(); i++) {
+    std::cout << alreadyTraversed->get(i)->getPositionDistance() << std::endl;
+  }
   return quickestPath;
 }
 
-void PathPlanning::checkStep(int xStep,
-                             int yStep,
-                             PDPtr currentSelection,
-                             PDList* reachablePositions) {
-  // check to see if next position is traversible
-  if (maze[currentSelection->getY() + yStep]
-          [currentSelection->getX() + xStep] == '.') {
-    PDPtr nextPosition = new PositionDistance(
-        currentSelection->getX() + xStep, currentSelection->getY() + yStep,
-        currentSelection->getDistance() + STEP);
-    // if reachablePositions doesnt already contain the next position,
-    // add it to the list
-    if (!reachablePositions->containsCoordinate(nextPosition)) {
-      reachablePositions->addBack(nextPosition);
-    }
+void PathPlanning::setReachablePositions(PDPtr currentSelection,
+                                         PDList* reachablePositions) {
+  // check one step up
+  if (checkStep(NO_STEP, BACKWARD_STEP, currentSelection)) {
+    setNextReachablePosition(NO_STEP, BACKWARD_STEP, currentSelection,
+                             reachablePositions);
   }
+
+  // check one step down
+  if (checkStep(NO_STEP, FORWARD_STEP, currentSelection)) {
+    setNextReachablePosition(NO_STEP, FORWARD_STEP, currentSelection,
+                             reachablePositions);
+  }
+
+  // check one step left
+  if (checkStep(BACKWARD_STEP, NO_STEP, currentSelection)) {
+    setNextReachablePosition(BACKWARD_STEP, NO_STEP, currentSelection,
+                             reachablePositions);
+  }
+
+  // check one step right
+  if (checkStep(FORWARD_STEP, NO_STEP, currentSelection)) {
+    setNextReachablePosition(FORWARD_STEP, NO_STEP, currentSelection,
+                             reachablePositions);
+  }
+}
+
+bool PathPlanning::checkStep(int xStep, int yStep, PDPtr currentSelection) {
+  // check to see if next position is traversible
+  return (this->maze[currentSelection->getY() + yStep]
+                    [currentSelection->getX() + xStep] == '.');
+}
+
+void PathPlanning::setNextReachablePosition(int xStep,
+                                            int yStep,
+                                            PDPtr currentSelection,
+                                            PDList* reachablePositions) {
+  PDPtr nextPosition = new PositionDistance(
+      currentSelection->getX() + xStep, currentSelection->getY() + yStep,
+      currentSelection->getDistance() + STEP);
+  // if reachablePositions doesnt already contain the next position,
+  // add it to the list
+  if (!reachablePositions->containsCoordinate(nextPosition)) {
+    reachablePositions->addBack(nextPosition);
+  }
+}
+
+bool PathPlanning::singlePath(PDPtr nextPosition, PDPtr previousPosition) {
+  bool isSinglePath = false;
+  int paths = NO_PATH;
+  // check one step up
+  if (checkStep(NO_STEP, BACKWARD_STEP, nextPosition)) {
+    paths++;
+  }
+  // check one step down
+  if (checkStep(NO_STEP, FORWARD_STEP, nextPosition)) {
+    paths++;
+  }
+  // check one step left
+  if (checkStep(BACKWARD_STEP, NO_STEP, nextPosition)) {
+    paths++;
+  }
+  // check one step right
+  if (checkStep(FORWARD_STEP, NO_STEP, nextPosition)) {
+    paths++;
+  }
+  if (paths == 1 or paths == 2) {
+    isSinglePath = true;
+  }
+  return isSinglePath;
 }
 
 bool PathPlanning::oneStepCloser(PositionDistance* nextPosition,
@@ -178,6 +236,7 @@ bool PathPlanning::oneStep(PositionDistance* nextPosition,
            (nextPosition->getX() == previousPosition->getX())));
 }
 
+// return true if position cordinates matches the goal
 bool PathPlanning::goalReached(PositionDistance* position,
                                int goalX,
                                int goalY) {

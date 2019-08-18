@@ -35,13 +35,20 @@ class PathPlanning {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
 
+  void setReachablePositions(PDPtr currentSelection,
+                             PDList* reachablePositions);
+
   // goes to one of the four possible next positions in th maze
   // and checks to see if they are traversable
   // if true, they are added to the reachable list
-  void checkStep(int xStep,
-                 int yStep,
-                 PDPtr currentSelection,
-                 PDList* reachablePositions);
+  bool checkStep(int xStep, int yStep, PDPtr currentSelection);
+
+  void setNextReachablePosition(int xStep,
+                                int yStep,
+                                PDPtr currentSelection,
+                                PDList* reachablePositions);
+
+  bool singlePath(PDPtr nextPositon, PDPtr previousPosition);
 
   bool oneStepCloser(PositionDistance* position,
                      PositionDistance* previousPosition,
