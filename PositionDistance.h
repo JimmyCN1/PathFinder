@@ -24,13 +24,20 @@ class PositionDistance {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+  // constructor
   PositionDistance(const int& x, const int& y, const int& dist);
 
+  // copy constructor
   PositionDistance(PositionDistance* originalPositionDistance);
 
   PositionDistance();
 
+  ~PositionDistance();
+
   std::string getPositionDistance();
+
+  // return true if x, y coordinates equal position's x, y coordinates
+  bool equals(PositionDistance* position);
 
  private:
   int x;

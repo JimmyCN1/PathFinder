@@ -21,6 +21,8 @@ PositionDistance::PositionDistance() {
   this->dist = 0;
 }
 
+PositionDistance::~PositionDistance() {}
+
 int PositionDistance::getX() {
   return this->x;
 }
@@ -34,4 +36,8 @@ int PositionDistance::getDistance() {
 std::string PositionDistance::getPositionDistance() {
   return "PosiDistance__ x: " + std::to_string(x) +
          ", y: " + std::to_string(y) + ", dist: " + std::to_string(dist);
+}
+
+bool PositionDistance::equals(PositionDistance* position) {
+  return (this->x == position->getX() && this->y == position->getY());
 }

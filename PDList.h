@@ -50,6 +50,8 @@ class PDList {
   /* You can change this code.                   */
 
  private:
+  int getIndex(PDPtr position);
+
   PDPtr* positions;
   int numPositions;
 };

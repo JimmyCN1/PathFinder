@@ -10,9 +10,6 @@
 // constructor
 PDList::PDList() {
   // creates list and sets all to nullptr
-  // for (int i = 0; i < MAX_POSITIONS; i++) {
-  //   positions[i] = nullptr;
-  // }
   this->positions = new PDPtr[0];
   // set initial numPositions
   this->numPositions = EMPTY;
@@ -40,12 +37,43 @@ void PDList::addBack(PDPtr position) {
   PDPtr* tempList = new PDPtr[this->numPositions + 1];
   for (int i = 0; i < this->numPositions; i++) {
     tempList[i] = new PositionDistance(this->positions[i]);
-    std::cout << tempList[i]->getPositionDistance() << std::endl;
+    // std::cout << tempList[i]->getPositionDistance() << std::endl;
   }
   tempList[this->numPositions] = position;
-
   this->positions = tempList;
+
   this->numPositions++;
+}
+
+void PDList::remove(PDPtr position) {
+  if (!this->containsCoordinate(position)) {
+    std::cout << "Error: PDList does not contain this postion." << std::endl;
+  } else {
+    int positionIndex = this->getIndex(position);
+    PDPtr* tempList = new PDPtr[this->numPositions - 1];
+    int tempIndex = 0;
+    for (int i = 0; i < this->size(); i++) {
+      if (i != positionIndex) {
+        tempList[tempIndex] = new PositionDistance(this->positions[i]);
+        tempIndex++;
+      }
+    }
+    this->positions = tempList;
+    this->numPositions--;
+  }
+}
+
+// returns the index of the passed postion in a pdlist
+int PDList::getIndex(PDPtr position) {
+  int index = -1;
+  for (int i = 0; i < this->size(); i++) {
+    if (this->positions[i]->equals(position)) {
+      index = i;
+    } else {
+      index = -1;
+    }
+  }
+  return index;
 }
 
 // returns true if all the coordinates int the parameter list
@@ -72,8 +100,7 @@ bool PDList::containsCoordinate(PDPtr position) {
   if (this->numPositions != EMPTY) {
     int i = 0;
     while (i < this->numPositions && isContained == false) {
-      if (position->getX() == positions[i]->getX() &&
-          position->getY() == positions[i]->getY()) {
+      if (position->equals(positions[i])) {
         isContained = true;
       } else {
         i++;
