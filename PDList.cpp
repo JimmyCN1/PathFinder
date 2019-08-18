@@ -47,7 +47,8 @@ void PDList::addBack(PDPtr position) {
 
 void PDList::remove(PDPtr position) {
   if (!this->containsCoordinate(position)) {
-    std::cout << "Error: PDList does not contain this postion." << std::endl;
+    std::cout << "Error: PDList does not contain this postion:: "
+              << position->getPositionDistance() << std::endl;
   } else {
     int positionIndex = this->getIndex(position);
     PDPtr* tempList = new PDPtr[this->numPositions - 1];
@@ -60,17 +61,23 @@ void PDList::remove(PDPtr position) {
     }
     this->positions = tempList;
     this->numPositions--;
+    std::cout << "Removed!!!!!!!!!!!!!!!!!!." << std::endl;
   }
 }
 
 // returns the index of the passed postion in a pdlist
 int PDList::getIndex(PDPtr position) {
+  bool matchFound = false;
   int index = -1;
   for (int i = 0; i < this->size(); i++) {
-    if (this->positions[i]->equals(position)) {
-      index = i;
-    } else {
-      index = -1;
+    if (!matchFound) {
+      if (this->positions[i]->equals(position)) {
+        matchFound = true;
+        index = i;
+      }
+      // else {
+      //   index = -1;
+      // }
     }
   }
   return index;
@@ -105,7 +112,10 @@ bool PDList::containsCoordinate(PDPtr position) {
       } else {
         i++;
       }
-    };
+    }
+  } else {
+    std::cout << "Error: Does not contain coordinates as the list is empty"
+              << std::endl;
   }
   return isContained;
 }
