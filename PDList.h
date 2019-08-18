@@ -1,7 +1,6 @@
 
 #ifndef COSC_ASS_ONE_POSITION_LIST
 #define COSC_ASS_ONE_POSITION_LIST
-#define MAX_POSITIONS 91
 
 #include "PositionDistance.h"
 #include "Types.h"
@@ -22,7 +21,7 @@ class PDList {
   int size();
 
   // Get a pointer to the position-distance at index i
-  PDPtr get(int i);
+  PDPtr get(const int& i);
 
   // Add a position-distance (as a pointer) to the list
   //    This class now has control over the pointer
@@ -43,13 +42,15 @@ class PDList {
   /*                                           */
   void setLast(PDPtr position);
 
+  void remove(PDPtr position);
+
   bool containsAllCoordinatesFromArray(PDList* coordinates);
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
 
  private:
-  PDPtr positions[MAX_POSITIONS];
+  PDPtr* positions;
   int numPositions;
 };
 

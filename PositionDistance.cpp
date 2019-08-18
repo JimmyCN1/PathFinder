@@ -1,7 +1,9 @@
 
 #include "PositionDistance.h"
 
-PositionDistance::PositionDistance(int x, int y, int dist) {
+PositionDistance::PositionDistance(const int& x,
+                                   const int& y,
+                                   const int& dist) {
   this->x = x;
   this->y = y;
   this->dist = dist;

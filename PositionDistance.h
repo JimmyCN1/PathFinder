@@ -24,7 +24,7 @@ class PositionDistance {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
-  PositionDistance(int x, int y, int dist);
+  PositionDistance(const int& x, const int& y, const int& dist);
 
   PositionDistance(PositionDistance* originalPositionDistance);
 

@@ -71,7 +71,8 @@ PDList* PathPlanning::getReachablePositions() {
   for (int i = FIRST_STEP; i < reachablePositions->size(); i++) {
     deepCopyReachablePositions->addBack(
         new PositionDistance(reachablePositions->get(i)));
-    std::cout << reachablePositions->get(i)->getPositionDistance() << std::endl;
+    // std::cout << reachablePositions->get(i)->getPositionDistance() <<
+    // std::endl;
   }
 
   delete reachablePositions;
@@ -81,7 +82,7 @@ PDList* PathPlanning::getReachablePositions() {
 
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
-PDList* PathPlanning::getPath(int toX, int toY) {
+PDList* PathPlanning::getPath(const int& toX, const int& toY) {
   // initialisation
   bool goalReached = false;
   PDPtr startingPoint =
@@ -149,19 +150,19 @@ bool PathPlanning::isCloserToGoal(PositionDistance* nextPosition,
        std::abs(nextPosition->getX() - goalX)) ||
       (std::abs(previousPosition->getY() - goalY) >
        std::abs(nextPosition->getY() - goalY))) {
-    std::cout << "prev pos: " << previousPosition->getPositionDistance()
-              << std::endl;
-    std::cout << "position: " << nextPosition->getPositionDistance()
-              << std::endl;
-    std::cout << "goal: " << goalX << "," << goalY << std::endl;
-    std::cout << "x prev abs: " << std::abs(previousPosition->getX() - goalX)
-              << std::endl;
-    std::cout << "x curr abs: " << std::abs(nextPosition->getX() - goalX)
-              << std::endl;
-    std::cout << "y prev abs: " << std::abs(previousPosition->getY() - goalY)
-              << std::endl;
-    std::cout << "y curr abs: " << std::abs(nextPosition->getY() - goalY)
-              << std::endl;
+    // std::cout << "prev pos: " << previousPosition->getPositionDistance()
+    //           << std::endl;
+    // std::cout << "position: " << nextPosition->getPositionDistance()
+    //           << std::endl;
+    // std::cout << "goal: " << goalX << "," << goalY << std::endl;
+    // std::cout << "x prev abs: " << std::abs(previousPosition->getX() - goalX)
+    //           << std::endl;
+    // std::cout << "x curr abs: " << std::abs(nextPosition->getX() - goalX)
+    //           << std::endl;
+    // std::cout << "y prev abs: " << std::abs(previousPosition->getY() - goalY)
+    //           << std::endl;
+    // std::cout << "y curr abs: " << std::abs(nextPosition->getY() - goalY)
+    //           << std::endl;
     isCloser = true;
   }
 

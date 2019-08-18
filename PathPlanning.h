@@ -29,7 +29,7 @@ class PathPlanning {
   // Method for Milestone 3
   // Get the path from the starting position to the given co-ordinate
   //    The path should be a DEEP COPY
-  PDList* getPath(int toX, int toY);
+  PDList* getPath(const int& toX, const int& toY);
 
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */

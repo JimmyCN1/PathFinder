@@ -1,4 +1,5 @@
 #define EMPTY 0
+#define ONE 1
 
 #include "PDList.h"
 
@@ -9,11 +10,12 @@
 // constructor
 PDList::PDList() {
   // creates list and sets all to nullptr
-  for (int i = 0; i < MAX_POSITIONS; i++) {
-    positions[i] = nullptr;
-  }
+  // for (int i = 0; i < MAX_POSITIONS; i++) {
+  //   positions[i] = nullptr;
+  // }
+  this->positions = new PDPtr[0];
   // set initial numPositions
-  numPositions = 0;
+  this->numPositions = EMPTY;
 }
 
 // deconstructor
@@ -23,29 +25,34 @@ PDList::~PDList() {
 
 // returns the number of indexes that contain positions
 int PDList::size() {
-  int size = EMPTY;
-  while (positions[size] != nullptr) {
-    size++;
-  }
-  return size;
+  return this->numPositions;
 }
 
-PDPtr PDList::get(int i) {
+PDPtr PDList::get(const int& i) {
   return positions[i];
 }
 
 void PDList::setLast(PDPtr position) {
-  this->positions[this->numPositions - 1] = position;
+  this->positions[this->numPositions - ONE] = position;
 }
 
 void PDList::addBack(PDPtr position) {
-  positions[PDList::numPositions] = position;
-  numPositions++;
+  PDPtr* tempList = new PDPtr[this->numPositions + 1];
+  for (int i = 0; i < this->numPositions; i++) {
+    tempList[i] = new PositionDistance(this->positions[i]);
+    std::cout << tempList[i]->getPositionDistance() << std::endl;
+  }
+  tempList[this->numPositions] = position;
+
+  this->positions = tempList;
+  this->numPositions++;
 }
 
+// returns true if all the coordinates int the parameter list
+// are contained within this
 bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
   bool hasCoordinates = true;
-  if (numPositions != EMPTY) {
+  if (this->numPositions != EMPTY) {
     int i = 0;
     int size = coordinates->size();
     while (i < size && hasCoordinates == true) {
@@ -59,11 +66,12 @@ bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
   return hasCoordinates;
 }
 
+// returns true if the position passed is contained in this
 bool PDList::containsCoordinate(PDPtr position) {
   bool isContained = false;
-  if (numPositions != EMPTY) {
+  if (this->numPositions != EMPTY) {
     int i = 0;
-    while (i < numPositions && isContained == false) {
+    while (i < this->numPositions && isContained == false) {
       if (position->getX() == positions[i]->getX() &&
           position->getY() == positions[i]->getY()) {
         isContained = true;
@@ -77,8 +85,7 @@ bool PDList::containsCoordinate(PDPtr position) {
 
 void PDList::clear() {
   // deletes all PDPtrs in the array
-  for (int i = 0; i < MAX_POSITIONS; i++) {
-    delete positions[i];
+  for (int i = 0; i < this->numPositions; i++) {
+    delete this->positions[i];
   }
-  // delete[] positions;
 }
