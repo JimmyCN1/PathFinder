@@ -43,10 +43,15 @@ class PathPlanning {
                  PDPtr currentSelection,
                  PDList* reachablePositions);
 
-  bool isCloserToGoal(PositionDistance* position,
-                      PositionDistance* previousPosition,
-                      int goalX,
-                      int goalY);
+  bool oneStepCloser(PositionDistance* position,
+                     PositionDistance* previousPosition,
+                     int goalX,
+                     int goalY);
+
+  bool oneStep(PositionDistance* nextPosition,
+               PositionDistance* previousPosition);
+
+  bool goalReached(PositionDistance* position, int goalX, int goalY);
 
   Grid maze;
   int rows;

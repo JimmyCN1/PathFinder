@@ -84,10 +84,10 @@ PDList* PathPlanning::getReachablePositions() {
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(const int& toX, const int& toY) {
   // initialisation
-  bool goalReached = false;
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* quickestPath = new PDList();
+  // PDList* options = new PDList();
   PDList* reachablePositions = getReachablePositions();
 
   // add starting point to thie quickest path array
@@ -104,19 +104,18 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
     // add next position
     // if the next position has same distance but is closer to the goal,
     // replace the last added position with the new position
-    if (!goalReached) {
-      if (nextPosition->getDistance() > previousPosition->getDistance()) {
-        quickestPath->addBack(nextPosition);
-      } else if (nextPosition->getDistance() ==
-                 previousPosition->getDistance()) {
-        if (isCloserToGoal(nextPosition, previousPosition, toX, toY)) {
-          quickestPath->setLast(nextPosition);
+    if (!goalReached(previousPosition, toX, toY)) {
+      if (oneStep(nextPosition, previousPosition)) {
+        if (nextPosition->getDistance() - previousPosition->getDistance() ==
+            STEP) {
+          quickestPath->addBack(nextPosition);
+        } else if (nextPosition->getDistance() ==
+                   previousPosition->getDistance()) {
+          if (oneStepCloser(nextPosition, previousPosition, toX, toY)) {
+            quickestPath->setLast(nextPosition);
+          }
         }
       }
-    }
-    // check to see if goal is reached
-    if (nextPosition->getX() == toX && nextPosition->getY() == toY) {
-      goalReached = true;
     }
   }
 
@@ -141,15 +140,15 @@ void PathPlanning::checkStep(int xStep,
   }
 }
 
-bool PathPlanning::isCloserToGoal(PositionDistance* nextPosition,
-                                  PositionDistance* previousPosition,
-                                  int goalX,
-                                  int goalY) {
-  bool isCloser = false;
-  if ((std::abs(previousPosition->getX() - goalX) >
-       std::abs(nextPosition->getX() - goalX)) ||
-      (std::abs(previousPosition->getY() - goalY) >
-       std::abs(nextPosition->getY() - goalY))) {
+bool PathPlanning::oneStepCloser(PositionDistance* nextPosition,
+                                 PositionDistance* previousPosition,
+                                 int goalX,
+                                 int goalY) {
+  bool isOneStepCloser = false;
+  if ((std::abs(previousPosition->getX() - goalX) -
+       std::abs(nextPosition->getX() - goalX)) == STEP ||
+      (std::abs(previousPosition->getY() - goalY) -
+       std::abs(nextPosition->getY() - goalY)) == STEP) {
     // std::cout << "prev pos: " << previousPosition->getPositionDistance()
     //           << std::endl;
     // std::cout << "position: " << nextPosition->getPositionDistance()
@@ -163,8 +162,24 @@ bool PathPlanning::isCloserToGoal(PositionDistance* nextPosition,
     //           << std::endl;
     // std::cout << "y curr abs: " << std::abs(nextPosition->getY() - goalY)
     //           << std::endl;
-    isCloser = true;
+    isOneStepCloser = true;
   }
 
-  return isCloser;
+  return isOneStepCloser;
+}
+
+// return true if next position is one step
+bool PathPlanning::oneStep(PositionDistance* nextPosition,
+                           PositionDistance* previousPosition) {
+  return ((std::abs(nextPosition->getX() - previousPosition->getX()) == STEP) &&
+          (nextPosition->getY() == previousPosition->getY())) ||
+         (((std::abs(nextPosition->getY() - previousPosition->getY()) ==
+            STEP) &&
+           (nextPosition->getX() == previousPosition->getX())));
+}
+
+bool PathPlanning::goalReached(PositionDistance* position,
+                               int goalX,
+                               int goalY) {
+  return position->getX() == goalX && position->getY() == goalY;
 }
