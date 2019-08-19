@@ -15,6 +15,11 @@ PDList::PDList() {
   this->numPositions = EMPTY;
 }
 
+PDList::PDList(PDList* pdList) {
+  this->positions = new PDPtr[0];
+  this->addAll(pdList);
+}
+
 // deconstructor
 PDList::~PDList() {
   clear();
@@ -37,12 +42,17 @@ void PDList::addBack(PDPtr position) {
   PDPtr* tempList = new PDPtr[this->numPositions + 1];
   for (int i = 0; i < this->numPositions; i++) {
     tempList[i] = new PositionDistance(this->positions[i]);
-    // std::cout << tempList[i]->getPositionDistance() << std::endl;
   }
   tempList[this->numPositions] = position;
   this->positions = tempList;
 
   this->numPositions++;
+}
+
+void PDList::addAll(PDList* pdList) {
+  for (int i = 0; i < pdList->size(); i++) {
+    this->addBack(new PositionDistance(pdList->get(i)));
+  }
 }
 
 void PDList::remove(PDPtr position) {
@@ -51,18 +61,22 @@ void PDList::remove(PDPtr position) {
               << position->getPositionDistance() << std::endl;
   } else {
     int positionIndex = this->getIndex(position);
-    PDPtr* tempList = new PDPtr[this->numPositions - 1];
-    int tempIndex = 0;
-    for (int i = 0; i < this->size(); i++) {
-      if (i != positionIndex) {
-        tempList[tempIndex] = new PositionDistance(this->positions[i]);
-        tempIndex++;
-      }
-    }
-    this->positions = tempList;
-    this->numPositions--;
-    std::cout << "Removed!!!!!!!!!!!!!!!!!!." << std::endl;
+    removeAt(positionIndex);
   }
+}
+
+void PDList::removeAt(const int index) {
+  PDPtr* tempList = new PDPtr[this->numPositions - 1];
+  int tempIndex = 0;
+  for (int i = 0; i < this->size(); i++) {
+    if (i != index) {
+      tempList[tempIndex] = new PositionDistance(this->positions[i]);
+      tempIndex++;
+    }
+  }
+  this->positions = tempList;
+  this->numPositions--;
+  std::cout << "Removed!!!!!!!!!!!!!!!!!!." << std::endl;
 }
 
 // returns the index of the passed postion in a pdlist
@@ -75,9 +89,6 @@ int PDList::getIndex(PDPtr position) {
         matchFound = true;
         index = i;
       }
-      // else {
-      //   index = -1;
-      // }
     }
   }
   return index;
@@ -119,6 +130,8 @@ bool PDList::containsCoordinate(PDPtr position) {
   }
   return isContained;
 }
+
+void PDList::toString() {}
 
 void PDList::clear() {
   // deletes all PDPtrs in the array

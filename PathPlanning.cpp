@@ -59,13 +59,8 @@ PDList* PathPlanning::getReachablePositions() {
 
   } while (!tempPositions->containsAllCoordinatesFromArray(reachablePositions));
 
-  PDList* deepCopyReachablePositions = new PDList();
-  for (int i = FIRST_STEP; i < reachablePositions->size(); i++) {
-    deepCopyReachablePositions->addBack(
-        new PositionDistance(reachablePositions->get(i)));
-    // std::cout << reachablePositions->get(i)->getPositionDistance() <<
-    // std::endl;
-  }
+  PDList* deepCopyReachablePositions = new PDList(reachablePositions);
+  deepCopyReachablePositions->removeAt(FIRST_POSITION);
 
   delete reachablePositions;
 
@@ -110,10 +105,10 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
       // replace the last added position with the new position
 
       if (!isGoalReached) {
-        std::cout << "previousPosition: "
-                  << previousPosition->getPositionDistance() << std::endl;
-        std::cout << "nextPosition: " << nextPosition->getPositionDistance()
-                  << std::endl;
+        // std::cout << "previousPosition: "
+        //           << previousPosition->getPositionDistance() << std::endl;
+        // std::cout << "nextPosition: " << nextPosition->getPositionDistance()
+        //           << std::endl;
         if (!alreadyTraversed->containsCoordinate(nextPosition)) {
           if (oneStep(nextPosition, previousPosition)) {
             if (nextPosition->getDistance() - previousPosition->getDistance() ==
@@ -134,23 +129,24 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
       isGoalReached = goalReached(nextPosition, toX, toY) &&
                       quickestPath->containsCoordinate(nextPosition);
     }
-    for (int i = 0; i < reachablePositions->size(); i++) {
-      std::cout << "reachable: "
-                << reachablePositions->get(i)->getPositionDistance()
-                << std::endl;
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < alreadyTraversed->size(); i++) {
-      std::cout << "already traveresed: "
-                << alreadyTraversed->get(i)->getPositionDistance() << std::endl;
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < quickestPath->size(); i++) {
-      std::cout << "quickest Path: "
-                << quickestPath->get(i)->getPositionDistance() << std::endl;
-      // std::cout << "goal reached? " << isGoalReached << std::endl;
-    }
-    std::cout << std::endl;
+    // for (int i = 0; i < reachablePositions->size(); i++) {
+    //   std::cout << "reachable: "
+    //             << reachablePositions->get(i)->getPositionDistance()
+    //             << std::endl;
+    // }
+    // std::cout << std::endl;
+    // for (int i = 0; i < alreadyTraversed->size(); i++) {
+    //   std::cout << "already traveresed: "
+    //             << alreadyTraversed->get(i)->getPositionDistance() <<
+    //             std::endl;
+    // }
+    // std::cout << std::endl;
+    // for (int i = 0; i < quickestPath->size(); i++) {
+    //   std::cout << "quickest Path: "
+    //             << quickestPath->get(i)->getPositionDistance() << std::endl;
+    //   // std::cout << "goal reached? " << isGoalReached << std::endl;
+    // }
+    // std::cout << std::endl;
   }
 
   return quickestPath;
@@ -270,9 +266,9 @@ bool PathPlanning::oneStep(PositionDistance* nextPosition,
 bool PathPlanning::goalReached(PositionDistance* position,
                                int goalX,
                                int goalY) {
-  int x = position->getX();
-  int y = position->getY();
-  std::cout << "x: " << x << "goal x: " << goalX << std::endl;
-  std::cout << "y: " << y << "goal y: " << goalY << std::endl;
+  // int x = position->getX();
+  // int y = position->getY();
+  // std::cout << "x: " << x << "goal x: " << goalX << std::endl;
+  // std::cout << "y: " << y << "goal y: " << goalY << std::endl;
   return position->getX() == goalX && position->getY() == goalY;
 }

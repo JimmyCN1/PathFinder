@@ -40,11 +40,20 @@ class PDList {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
+
+  PDList(PDList* pdList);
+
+  void addAll(PDList* pdList);
+
   void setLast(PDPtr position);
 
   void remove(PDPtr position);
 
+  void removeAt(const int index);
+
   bool containsAllCoordinatesFromArray(PDList* coordinates);
+
+  void toString();
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
