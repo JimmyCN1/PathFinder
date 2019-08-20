@@ -69,15 +69,6 @@ void PDList::addBack(PDPtr position) {
   this->positions = tempList;
 
   this->numPositions++;
-
-  // PDPtr tempList[this->size() + 1];
-  // for (int i = 0; i < this->numPositions; i++) {
-  //   tempList[i] = new PositionDistance(this->positions[i]);
-  // }
-  // tempList[this->size()] = position;
-  // this->positions = tempList;
-
-  // this->numPositions++;
 }
 
 void PDList::remove(PDPtr position) {
@@ -101,7 +92,7 @@ void PDList::removeAt(const int index) {
   }
   this->positions = tempList;
   this->numPositions--;
-  std::cout << "Removed!!!!!!!!!!!!!!!!!!." << std::endl;
+  // std::cout << "Removed!!!!!!!!!!!!!!!!!!." << std::endl;
 }
 
 // returns the index of the passed postion in a pdlist

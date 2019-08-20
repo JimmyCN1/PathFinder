@@ -75,7 +75,6 @@ class PathPlanning {
   int cols;
   int initialX;
   int initialY;
-  PDList* myReachablePositions;
   PDList* quickestPath;
 };
 

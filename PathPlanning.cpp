@@ -21,7 +21,6 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
     this->maze = maze;
     this->rows = rows;
     this->cols = cols;
-    this->myReachablePositions = new PDList();
     this->quickestPath = new PDList();
   }
 }
@@ -66,7 +65,11 @@ PDList* PathPlanning::getReachablePositions() {
 
   delete reachablePositions;
 
-  // this->myReachablePositions = new PDList(deepCopyReachablePositions);
+  for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
+    std::cout << "deepCopy: "
+              << deepCopyReachablePositions->get(i)->getPositionDistance()
+              << std::endl;
+  }
 
   return deepCopyReachablePositions;
 }
@@ -190,18 +193,11 @@ void PathPlanning::getPath(PDList* path,
   if (goalReached(currentPosition, toX, toY)) {
     std::cout << "goal found!!!!!!!****************************************!"
               << std::endl;
-    // std::cout << "current position: " <<
-    // currentPosition->getPositionDistance()
-    //           << std::endl;
     for (int i = 0; i < this->quickestPath->size(); i++) {
       std::cout << "quickestPath: "
                 << this->quickestPath->get(i)->getPositionDistance()
                 << std::endl;
     }
-    // for (int i = 0; i < path->size(); i++) {
-    //   std::cout << "currentPath: " << path->get(i)->getPositionDistance()
-    //             << std::endl;
-    // }
     if (!pathFound || (pathFound && path->size() < quickestPath->size())) {
       std::cout << "quickestPath&: " << this->quickestPath << std::endl;
       std::cout << "changing address......... " << std::endl;
@@ -219,6 +215,8 @@ void PathPlanning::getPath(PDList* path,
               << std::endl;
     std::cout << "reached dead end(((((((((((((((((((((((((" << std::endl;
     // delete[] path;
+  } else if (pathFound && quickestPath->size() < path->size()) {
+    std::cout << "already found a shorter path!!!" << std::endl;
   } else {
     std::cout << "Reached recursion" << std::endl;
     PDPtr stepUp = new PositionDistance(currentPosition->getX() + NO_STEP,
