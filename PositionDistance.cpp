@@ -1,6 +1,8 @@
 
 #include "PositionDistance.h"
 
+#include <iostream>
+
 PositionDistance::PositionDistance(const int& x,
                                    const int& y,
                                    const int& dist) {
@@ -10,6 +12,7 @@ PositionDistance::PositionDistance(const int& x,
 }
 
 PositionDistance::PositionDistance(PositionDistance* originalPositionDistance) {
+  // std::cout << "base " << originalPositionDistance << std::endl;
   this->x = originalPositionDistance->getX();
   this->y = originalPositionDistance->getY();
   this->dist = originalPositionDistance->getDistance();

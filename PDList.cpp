@@ -17,7 +17,11 @@ PDList::PDList() {
 
 PDList::PDList(PDList* pdList) {
   this->positions = new PDPtr[0];
+  //
+  // std::cout << pdList->get(0) << std::endl;
+  // std::cout << "base+2: " << this->get(0) << std::endl;
   this->addAll(pdList);
+  this->numPositions = this->size();
 }
 
 // deconstructor
@@ -30,29 +34,50 @@ int PDList::size() {
   return this->numPositions;
 }
 
-PDPtr PDList::get(const int& i) {
+PDPtr PDList::get(int i) {
   return positions[i];
+}
+
+PDPtr PDList::getLast() {
+  return get(this->size() - 1);
 }
 
 void PDList::setLast(PDPtr position) {
   this->positions[this->numPositions - ONE] = position;
 }
 
+void PDList::addAll(PDList* pdList) {
+  for (int i = 0; i < pdList->size(); i++) {
+    //
+    // std::cout << pdList->get(0) << std::endl;
+    // std::cout << this->get(i) << std::endl;
+    this->addBack(new PositionDistance(pdList->get(i)));
+  }
+}
+
 void PDList::addBack(PDPtr position) {
   PDPtr* tempList = new PDPtr[this->numPositions + 1];
   for (int i = 0; i < this->numPositions; i++) {
-    tempList[i] = new PositionDistance(this->positions[i]);
+    //
+    // std::cout << "last good call " << position << std::endl;
+    // std::cout << "base+1: " << this->get(i) << std::endl;
+    tempList[i] = new PositionDistance(this->get(i));
   }
+  // std::cout << "made it passed " << position->getPositionDistance()
+  //           << std::endl;
   tempList[this->numPositions] = position;
   this->positions = tempList;
 
   this->numPositions++;
-}
 
-void PDList::addAll(PDList* pdList) {
-  for (int i = 0; i < pdList->size(); i++) {
-    this->addBack(new PositionDistance(pdList->get(i)));
-  }
+  // PDPtr tempList[this->size() + 1];
+  // for (int i = 0; i < this->numPositions; i++) {
+  //   tempList[i] = new PositionDistance(this->positions[i]);
+  // }
+  // tempList[this->size()] = position;
+  // this->positions = tempList;
+
+  // this->numPositions++;
 }
 
 void PDList::remove(PDPtr position) {
@@ -60,7 +85,7 @@ void PDList::remove(PDPtr position) {
     std::cout << "Error: PDList does not contain this postion:: "
               << position->getPositionDistance() << std::endl;
   } else {
-    int positionIndex = this->getIndex(position);
+    int positionIndex = this->getIndexOf(position);
     removeAt(positionIndex);
   }
 }
@@ -80,7 +105,7 @@ void PDList::removeAt(const int index) {
 }
 
 // returns the index of the passed postion in a pdlist
-int PDList::getIndex(PDPtr position) {
+int PDList::getIndexOf(PDPtr position) {
   bool matchFound = false;
   int index = -1;
   for (int i = 0; i < this->size(); i++) {

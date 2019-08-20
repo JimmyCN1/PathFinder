@@ -35,17 +35,27 @@ class PathPlanning {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
 
-  void setReachablePositions(PDPtr currentSelection,
-                             PDList* reachablePositions);
+  void getPath(PDList* path,
+               PDList* traversed,
+               const int& toX,
+               const int& toY,
+               bool& pathFound);
+
+  void setReachablePositions(PDPtr currentPosition, PDList* reachablePositions);
+
+  bool isDeadEnd(PDPtr currentPosition, PDList* traversed);
 
   // goes to one of the four possible next positions in th maze
   // and checks to see if they are traversable
   // if true, they are added to the reachable list
-  bool checkStep(int xStep, int yStep, PDPtr currentSelection);
+  bool checkStep(int xStep, int yStep, PDPtr currentPosition);
+
+  // returns true if passed position is traversible
+  bool checkStep(PDPtr nextPosition);
 
   void setNextReachablePosition(int xStep,
                                 int yStep,
-                                PDPtr currentSelection,
+                                PDPtr currentPosition,
                                 PDList* reachablePositions);
 
   bool singlePath(PDPtr nextPositon, PDPtr previousPosition);
@@ -65,6 +75,8 @@ class PathPlanning {
   int cols;
   int initialX;
   int initialY;
+  PDList* myReachablePositions;
+  PDList* quickestPath;
 };
 
 #endif  // COSC_ASS_ONE_PATH_PLANNING

@@ -21,7 +21,7 @@ class PDList {
   int size();
 
   // Get a pointer to the position-distance at index i
-  PDPtr get(const int& i);
+  PDPtr get(int i);
 
   // Add a position-distance (as a pointer) to the list
   //    This class now has control over the pointer
@@ -45,6 +45,8 @@ class PDList {
 
   void addAll(PDList* pdList);
 
+  PDPtr getLast();
+
   void setLast(PDPtr position);
 
   void remove(PDPtr position);
@@ -59,7 +61,7 @@ class PDList {
   /* You can change this code.                   */
 
  private:
-  int getIndex(PDPtr position);
+  int getIndexOf(PDPtr position);
 
   PDPtr* positions;
   int numPositions;
