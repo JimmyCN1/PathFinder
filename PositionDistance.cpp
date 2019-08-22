@@ -12,7 +12,6 @@ PositionDistance::PositionDistance(const int& x,
 }
 
 PositionDistance::PositionDistance(PositionDistance* originalPositionDistance) {
-  // std::cout << "base " << originalPositionDistance << std::endl;
   this->x = originalPositionDistance->getX();
   this->y = originalPositionDistance->getY();
   this->dist = originalPositionDistance->getDistance();
@@ -23,8 +22,6 @@ PositionDistance::PositionDistance() {
   this->y = 0;
   this->dist = 0;
 }
-
-PositionDistance::~PositionDistance() {}
 
 int PositionDistance::getX() {
   return this->x;

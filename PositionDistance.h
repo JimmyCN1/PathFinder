@@ -32,8 +32,6 @@ class PositionDistance {
 
   PositionDistance();
 
-  ~PositionDistance();
-
   std::string getPositionDistance();
 
   // return true if x, y coordinates equal position's x, y coordinates

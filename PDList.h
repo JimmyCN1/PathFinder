@@ -43,6 +43,8 @@ class PDList {
 
   PDList(PDList* pdList);
 
+  PDList(PDList* pdList, PDPtr pdPtr);
+
   void addAll(PDList* pdList);
 
   PDPtr getLast();
