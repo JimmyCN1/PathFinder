@@ -122,6 +122,10 @@ void PathPlanning::getPath(PDList* path,
       this->quickestPath = new PDList(path);
     }
     pathFound = true;
+  } else if (isDeadEnd(currentPosition, traversed)) {
+    std::cout << "reached dead end" << std::endl;
+  } else if (pathFound && quickestPath->size() < path->size()) {
+    std::cout << "already found a shorter path" << std::endl;
   } else {
     // create new PositionDistance* for potential reachable positions
     PDPtr stepUp = new PositionDistance(currentPosition->getX() + NO_STEP,
