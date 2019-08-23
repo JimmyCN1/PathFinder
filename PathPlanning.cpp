@@ -9,6 +9,7 @@
 #define FIRST_STEP 1
 #define NO_PATH 0
 #define SINGLE_PATH 2
+#define INITIAL 0
 
 #include "PathPlanning.h"
 
@@ -102,10 +103,8 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
     std::cout << "quickestPath: "
               << this->quickestPath->get(i)->getPositionDistance() << std::endl;
   }
-  delete trialPath;
-  // delete traversed;
 
-  return this->quickestPath;
+  return new PDList(this->quickestPath);
 }
 
 // recursive helper function for getPath
@@ -116,6 +115,9 @@ void PathPlanning::getPath(PDList* path,
                            const int& toY,
                            bool& pathFound) {
   PDPtr currentPosition = path->getLast();
+  static int recursionCount = INITIAL;
+  recursionCount++;
+  std::cout << "recursionCount: " << recursionCount << std::endl;
 
   if (goalReached(currentPosition, toX, toY)) {
     if (!pathFound || (pathFound && path->size() < quickestPath->size())) {

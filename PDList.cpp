@@ -18,7 +18,7 @@ PDList::PDList(PDList* pdList) {
   this->numPositions = this->size();
 }
 
-// a cop constructor which also adds the passed PDPtr to the end of the new
+// a copy constructor which also adds the passed PDPtr to the end of the new
 // PDList
 PDList::PDList(PDList* pdList, PDPtr pdPtr) {
   this->positions = new PDPtr[0];
