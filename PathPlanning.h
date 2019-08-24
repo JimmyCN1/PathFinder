@@ -7,7 +7,7 @@
 #include "Types.h"
 
 class PathPlanning {
- public:
+  public:
   /*                                           */
   /* DO NOT MODIFY ANY CODE IN THIS SECTION    */
   /*                                           */
@@ -49,10 +49,10 @@ class PathPlanning {
   // returns true if passed position is traversible
   bool checkStep(PDPtr nextPosition);
 
-  void setNextReachablePosition(int xStep,
-                                int yStep,
-                                PDPtr currentPosition,
-                                PDList* reachablePositions);
+  void setNextReachablePosition(int xStep, int yStep, PDPtr currentPosition,
+      PDList* reachablePositions);
+
+  bool isSingleStep(PDPtr currentPosition, PDPtr potentialPosition);
 
   bool goalReached(PositionDistance* position, int goalX, int goalY);
 
@@ -65,4 +65,4 @@ class PathPlanning {
   PDList* badPositionDistances;
 };
 
-#endif  // COSC_ASS_ONE_PATH_PLANNING
+#endif // COSC_ASS_ONE_PATH_PLANNING

@@ -45,7 +45,7 @@ typedef std::tuple<int, int, int> MyPosition;
 
 // Data contens
 class Data {
- public:
+public:
   Data() : maze(NULL), rows(0), cols(0), initial(), goal(), m3(false){};
 
   Grid maze;
@@ -58,25 +58,25 @@ class Data {
 
   bool m3;
 };
-typedef Data* DataPtr;
+typedef Data *DataPtr;
 
 // Helper methods for making and deleting grids
 Grid make_grid(const int rows, const int cols);
 void delete_grid(Grid grid, int rows, int cols);
 
 // Functions
-void check_args(int argc, char** argv);
-void load_data(char** argv, DataPtr data);
-void load_data_maze(char** argv, DataPtr data);
-void load_data_initial(char** argv, DataPtr data);
-void load_data_pos(char** argv, DataPtr data);
-void load_data_goal(char** argv, DataPtr data);
-void load_data_path(char** argv, DataPtr data);
-void load_lines(std::ifstream& in, std::vector<std::string>& lines);
-bool match_positions(MyPosition& posTest, PDPtr posrp);
+void check_args(int argc, char **argv);
+void load_data(char **argv, DataPtr data);
+void load_data_maze(char **argv, DataPtr data);
+void load_data_initial(char **argv, DataPtr data);
+void load_data_pos(char **argv, DataPtr data);
+void load_data_goal(char **argv, DataPtr data);
+void load_data_path(char **argv, DataPtr data);
+void load_lines(std::ifstream &in, std::vector<std::string> &lines);
+bool match_positions(MyPosition &posTest, PDPtr posrp);
 bool run_unit_test(DataPtr data);
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   try {
     // Check args
     check_args(argc, argv);
@@ -95,14 +95,14 @@ int main(int argc, char** argv) {
     } else {
       std::cout << "Test Failed" << std::endl;
     }
-  } catch (std::runtime_error& exception) {
+  } catch (std::runtime_error &exception) {
     std::cout << "ERROR: Caught Error: " << exception.what() << std::endl;
   }
 
   return 0;
 }
 
-void check_args(int argc, char** argv) {
+void check_args(int argc, char **argv) {
   if (argc != REQ_ARGS + 1) {
     throw std::runtime_error("Not enough file names provided");
   }
@@ -118,7 +118,7 @@ void check_args(int argc, char** argv) {
   }
 
   // Check files exist
-  auto checkFile = [](std::string& filename) {
+  auto checkFile = [](std::string &filename) {
     std::ifstream in;
     in.open(filename);
     if (in.fail()) {
@@ -132,7 +132,7 @@ void check_args(int argc, char** argv) {
   checkFile(posFilename);
 }
 
-void load_data(char** argv, DataPtr data) {
+void load_data(char **argv, DataPtr data) {
   load_data_maze(argv, data);
   load_data_initial(argv, data);
   load_data_pos(argv, data);
@@ -149,7 +149,7 @@ void load_data(char** argv, DataPtr data) {
   in.close();
 }
 
-void load_data_maze(char** argv, DataPtr data) {
+void load_data_maze(char **argv, DataPtr data) {
   std::string filename = argv[ARGV_TEST] + EXT_MAZE;
 
   std::ifstream in(filename);
@@ -166,7 +166,7 @@ void load_data_maze(char** argv, DataPtr data) {
 
   // Load Maze
   for (unsigned int row = 0; row != lines.size(); ++row) {
-    std::string& line = lines[row];
+    std::string &line = lines[row];
 
     // Check width
     if (line.size() != (unsigned int)width) {
@@ -191,7 +191,7 @@ void load_data_maze(char** argv, DataPtr data) {
   }
 }
 
-void load_data_initial(char** argv, DataPtr data) {
+void load_data_initial(char **argv, DataPtr data) {
   std::string filename = argv[ARGV_TEST] + EXT_INT;
   std::ifstream in(filename);
   std::vector<std::string> lines;
@@ -220,7 +220,7 @@ void load_data_initial(char** argv, DataPtr data) {
   }
 }
 
-void load_data_pos(char** argv, DataPtr data) {
+void load_data_pos(char **argv, DataPtr data) {
   std::string filename = argv[ARGV_TEST] + EXT_POS;
 
   std::ifstream in(filename);
@@ -231,7 +231,7 @@ void load_data_pos(char** argv, DataPtr data) {
   }
 
   // Process each position
-  for (std::string& line : lines) {
+  for (std::string &line : lines) {
     std::regex regex("^[(]([0-9]+),([0-9]+),([0-9]+)[)]$");
     std::smatch match;
     bool ok = std::regex_match(line, match, regex);
@@ -249,7 +249,7 @@ void load_data_pos(char** argv, DataPtr data) {
   }
 }
 
-void load_data_goal(char** argv, DataPtr data) {
+void load_data_goal(char **argv, DataPtr data) {
   std::string filename = argv[ARGV_TEST] + EXT_GOAL;
   std::ifstream in(filename);
   std::vector<std::string> lines;
@@ -278,7 +278,7 @@ void load_data_goal(char** argv, DataPtr data) {
   }
 }
 
-void load_data_path(char** argv, DataPtr data) {
+void load_data_path(char **argv, DataPtr data) {
   std::string filename = argv[ARGV_TEST] + EXT_PATH;
 
   std::ifstream in(filename);
@@ -289,7 +289,7 @@ void load_data_path(char** argv, DataPtr data) {
   }
 
   // Process each position
-  for (std::string& line : lines) {
+  for (std::string &line : lines) {
     std::regex regex("^[(]([0-9]+),([0-9]+),([0-9]+)[)]$");
     std::smatch match;
     bool ok = std::regex_match(line, match, regex);
@@ -307,7 +307,7 @@ void load_data_path(char** argv, DataPtr data) {
   }
 }
 
-void load_lines(std::ifstream& in, std::vector<std::string>& lines) {
+void load_lines(std::ifstream &in, std::vector<std::string> &lines) {
   while (!in.eof()) {
     std::string line;
     in >> line;
@@ -325,7 +325,7 @@ void load_lines(std::ifstream& in, std::vector<std::string>& lines) {
   }
 }
 
-bool match_positions(MyPosition& posTest, PDPtr posrp) {
+bool match_positions(MyPosition &posTest, PDPtr posrp) {
   bool match = false;
 
   match = std::get<TUPLE_X>(posTest) == posrp->getX() &&
@@ -342,7 +342,7 @@ bool run_unit_test(DataPtr data) {
   if (DEBUG) {
     std::cout << "Create Position filter" << std::endl;
   }
-  PathPlanning* rp = new PathPlanning(data->maze, data->rows, data->cols);
+  PathPlanning *rp = new PathPlanning(data->maze, data->rows, data->cols);
 
   // Set Initial Position
   rp->initialPosition(std::get<TUPLE_X>(data->initial),
@@ -351,7 +351,7 @@ bool run_unit_test(DataPtr data) {
   std::cout << "tupleY: " << std::get<TUPLE_Y>(data->initial) << std::endl;
 
   // Get final positions
-  PDList* finalPositions = rp->getReachablePositions();
+  PDList *finalPositions = rp->getReachablePositions();
   int numPositions = finalPositions->size();
   if (numPositions > 0) {
     if (DEBUG) {
@@ -365,7 +365,7 @@ bool run_unit_test(DataPtr data) {
     // Test all Positions are expected
     if ((unsigned int)numPositions == data->positions.size()) {
       std::map<int, bool> checked;
-      for (MyPosition& posTest : data->positions) {
+      for (MyPosition &posTest : data->positions) {
         for (int i = 0; i != numPositions; ++i) {
           if (match_positions(posTest, finalPositions->get(i))) {
             checked[i] = true;
@@ -388,7 +388,7 @@ bool run_unit_test(DataPtr data) {
   // Do Milestone 3 tests
   if (data->m3) {
     std::cout << "Testing Milestone 3" << std::endl;
-    PDList* path = rp->getPath(std::get<TUPLE_X>(data->goal),
+    PDList *path = rp->getPath(std::get<TUPLE_X>(data->goal),
                                std::get<TUPLE_Y>(data->goal));
     numPositions = path->size();
     if (DEBUG) {
@@ -402,7 +402,7 @@ bool run_unit_test(DataPtr data) {
     // Test all Positions are expected
     if ((unsigned int)numPositions == data->path.size()) {
       std::map<int, bool> checked;
-      for (MyPosition& posTest : data->path) {
+      for (MyPosition &posTest : data->path) {
         for (int i = 0; i != numPositions; ++i) {
           if (match_positions(posTest, path->get(i))) {
             checked[i] = true;
@@ -425,7 +425,7 @@ Grid make_grid(const int rows, const int cols) {
   Grid grid = NULL;
 
   if (rows >= 0 && cols >= 0) {
-    grid = new char*[rows];
+    grid = new char *[rows];
     for (int i = 0; i != rows; ++i) {
       grid[i] = new char[cols];
     }

@@ -6,7 +6,7 @@
 #include "Types.h"
 
 class PDList {
- public:
+  public:
   /*                                           */
   /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
   /*                                           */
@@ -62,11 +62,11 @@ class PDList {
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
 
- private:
+  private:
   int getIndexOf(PDPtr position);
 
   PDPtr* positions;
   int numPositions;
 };
 
-#endif  // COSC_ASS_ONE_POSITION_LIST
+#endif // COSC_ASS_ONE_POSITION_LIST

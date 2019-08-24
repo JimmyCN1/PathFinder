@@ -12,7 +12,7 @@ PDList::PDList() {
   this->numPositions = EMPTY;
 }
 
-PDList::PDList(PDList* pdList) {
+PDList::PDList(PDList *pdList) {
   this->positions = new PDPtr[0];
   // this->addAll(pdList);
   for (int i = 0; i < pdList->size(); i++) {
@@ -23,7 +23,7 @@ PDList::PDList(PDList* pdList) {
 
 // a copy constructor which also adds the passed PDPtr to the end of the new
 // PDList
-PDList::PDList(PDList* pdList, PDPtr pdPtr) {
+PDList::PDList(PDList *pdList, PDPtr pdPtr) {
   this->positions = new PDPtr[0];
   // this->addAll(pdList);
   for (int i = 0; i < pdList->size(); i++) {
@@ -32,21 +32,13 @@ PDList::PDList(PDList* pdList, PDPtr pdPtr) {
   this->addBack(pdPtr);
 }
 
-PDList::~PDList() {
-  clear();
-}
+PDList::~PDList() { clear(); }
 
-int PDList::size() {
-  return this->numPositions;
-}
+int PDList::size() { return this->numPositions; }
 
-PDPtr PDList::get(int i) {
-  return positions[i];
-}
+PDPtr PDList::get(int i) { return positions[i]; }
 
-PDPtr PDList::getLast() {
-  return get(this->size() - 1);
-}
+PDPtr PDList::getLast() { return get(this->size() - 1); }
 
 void PDList::setLast(PDPtr position) {
   this->positions[this->numPositions - ONE] = position;
@@ -60,7 +52,7 @@ void PDList::setLast(PDPtr position) {
 
 // copies the contents into a new array of size+=1 and adds the new position
 void PDList::addBack(PDPtr position) {
-  PDPtr* tempList = new PDPtr[this->numPositions + 1];
+  PDPtr *tempList = new PDPtr[this->numPositions + 1];
   for (int i = 0; i < this->numPositions; i++) {
     tempList[i] = new PositionDistance(this->get(i));
   }
@@ -84,7 +76,7 @@ void PDList::remove(PDPtr position) {
 
 // removes the position at the passed index from positions
 void PDList::removeAt(const int index) {
-  PDPtr* tempList = new PDPtr[this->numPositions - 1];
+  PDPtr *tempList = new PDPtr[this->numPositions - 1];
   int tempIndex = 0;
   for (int i = 0; i < this->size(); i++) {
     if (i != index) {
@@ -113,7 +105,7 @@ int PDList::getIndexOf(PDPtr position) {
 
 // returns true if all the coordinates int the parameter list
 // are contained within this
-bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
+bool PDList::containsAllCoordinatesFromArray(PDList *coordinates) {
   bool hasCoordinates = true;
   if (this->numPositions != EMPTY) {
     int i = 0;
