@@ -14,7 +14,10 @@ PDList::PDList() {
 
 PDList::PDList(PDList* pdList) {
   this->positions = new PDPtr[0];
-  this->addAll(pdList);
+  // this->addAll(pdList);
+  for (int i = 0; i < pdList->size(); i++) {
+    this->addBack(new PositionDistance(pdList->get(i)));
+  }
   this->numPositions = this->size();
 }
 
@@ -22,7 +25,10 @@ PDList::PDList(PDList* pdList) {
 // PDList
 PDList::PDList(PDList* pdList, PDPtr pdPtr) {
   this->positions = new PDPtr[0];
-  this->addAll(pdList);
+  // this->addAll(pdList);
+  for (int i = 0; i < pdList->size(); i++) {
+    this->addBack(new PositionDistance(pdList->get(i)));
+  }
   this->addBack(pdPtr);
 }
 
@@ -46,11 +52,11 @@ void PDList::setLast(PDPtr position) {
   this->positions[this->numPositions - ONE] = position;
 }
 
-void PDList::addAll(PDList* pdList) {
-  for (int i = 0; i < pdList->size(); i++) {
-    this->addBack(new PositionDistance(pdList->get(i)));
-  }
-}
+// void PDList::addAll(PDList* pdList) {
+//   for (int i = 0; i < pdList->size(); i++) {
+//     this->addBack(new PositionDistance(pdList->get(i)));
+//   }
+// }
 
 // copies the contents into a new array of size+=1 and adds the new position
 void PDList::addBack(PDPtr position) {
@@ -124,7 +130,7 @@ bool PDList::containsAllCoordinatesFromArray(PDList* coordinates) {
 }
 
 // returns true if the position passed is contained in this
-bool PDList::containsCoordinate(PDPtr position) {
+bool PDList::containsCoordinate(const PDPtr position) {
   bool isContained = false;
   if (this->numPositions != EMPTY) {
     int i = 0;

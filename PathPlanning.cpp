@@ -31,6 +31,7 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
     this->rows = rows;
     this->cols = cols;
     this->quickestPath = new PDList();
+    this->badPositionDistances = new PDList();
   }
 }
 
@@ -38,7 +39,8 @@ PathPlanning::~PathPlanning() {
   for (int i = FIRST_POSITION; i < rows; i++) {
     delete maze[i];
   }
-  delete maze;
+  delete[] maze;
+  delete this->quickestPath;
 }
 
 void PathPlanning::initialPosition(int x, int y) {
@@ -50,29 +52,58 @@ PDList* PathPlanning::getReachablePositions() {
   // initialisation
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
-  PDList* reachablePositions = new PDList;
-  PDList* tempPositions = new PDList;
+  PDList* reachablePositions = new PDList();
+  PDList* tempPositions = new PDList();
   PDPtr currentPosition = nullptr;
 
   // P initially containing x (initial position)
-  reachablePositions->addBack(startingPoint);
+  reachablePositions->addBack(new PositionDistance(startingPoint));
+  delete startingPoint;
 
+  // main algorithm to obtain reachable positions
   do {
     int iterations = reachablePositions->size();
     for (int i = FIRST_POSITION; i < iterations; i++) {
       currentPosition = reachablePositions->get(i);
       if (!tempPositions->containsCoordinate(currentPosition)) {
         setReachablePositions(currentPosition, reachablePositions);
-        tempPositions->addBack(currentPosition);
+        tempPositions->addBack(new PositionDistance(currentPosition));
       }
     }
-
   } while (!tempPositions->containsAllCoordinatesFromArray(reachablePositions));
 
+  // create deepCopy of reachable positions
   PDList* deepCopyReachablePositions = new PDList(reachablePositions);
   deepCopyReachablePositions->removeAt(FIRST_POSITION);
 
+  for (int i = 0; i < tempPositions->size(); i++) {
+    std::cout << &tempPositions[i] << "\t";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < tempPositions->size(); i++) {
+    std::cout << tempPositions->get(i)->getPositionDistance() << "\t";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < reachablePositions->size(); i++) {
+    std::cout << &reachablePositions[i] << "\t";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < reachablePositions->size(); i++) {
+    std::cout << reachablePositions->get(i)->getPositionDistance() << "\t";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
+    std::cout << &deepCopyReachablePositions[i] << "\t";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
+    std::cout << deepCopyReachablePositions->get(i)->getPositionDistance()
+              << "\t";
+  }
+  std::cout << std::endl;
+
   delete reachablePositions;
+  delete tempPositions;
 
   // for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
   //   std::cout << "deepCopy: "
@@ -92,17 +123,29 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
   PDPtr startingPoint =
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* trialPath = new PDList();
-  trialPath->addBack(startingPoint);
+  trialPath->addBack(new PositionDistance(startingPoint));
   PDList* traversed = new PDList();
-  traversed->addBack(startingPoint);
+  traversed->addBack(new PositionDistance(startingPoint));
+
+  // for (int i = 0; i < trialPath->size(); i++) {
+  //   std::cout << "path: " << &trialPath[i] << "\t";
+  // }
+  // for (int i = 0; i < traversed->size(); i++) {
+  //   std::cout << "traversed: " << &traversed[i] << "\t";
+  // }
+  delete startingPoint;
 
   // recursive helper function call
   getPath(trialPath, traversed, toX, toY, pathFound);
+  delete this->badPositionDistances;
 
   for (int i = 0; i < this->quickestPath->size(); i++) {
     std::cout << "quickestPath: "
               << this->quickestPath->get(i)->getPositionDistance() << std::endl;
   }
+
+  // delete traversed;
+  // delete trialPath;
 
   return new PDList(this->quickestPath);
 }
@@ -110,10 +153,11 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
 // recursive helper function for getPath
 void PathPlanning::getPath(PDList* path,
                            PDList* traversed,
-                           //  PDList* reachables,
                            const int& toX,
                            const int& toY,
                            bool& pathFound) {
+  std::cout << "getting last position from path: "
+            << path->getLast()->getPositionDistance() << std::endl;
   PDPtr currentPosition = path->getLast();
   static int recursionCount = INITIAL;
   recursionCount++;
@@ -145,26 +189,80 @@ void PathPlanning::getPath(PDList* path,
         new PositionDistance(currentPosition->getX() + FORWARD_STEP,
                              currentPosition->getY() + NO_STEP,
                              currentPosition->getDistance() + STEP);
+    std::cout << "getting last position from path: "
+              << path->getLast()->getPositionDistance() << std::endl;
+
+    std::cout << "steps: " << stepUp << "\t" << stepDown << "\t" << stepLeft
+              << "\t" << stepRight << std::endl;
     // if pathExists, recurse up || down || left || right
     if ((checkStep(stepUp) && !traversed->containsCoordinate(stepUp))) {
-      PDList* pathUp = new PDList(path, stepUp);
-      PDList* newTraversed = new PDList(traversed, stepUp);
+      std::cout << "getting last position from path in up: "
+                << path->getLast()->getPositionDistance() << std::endl;
+      PDList* pathUp = new PDList(path, new PositionDistance(stepUp));
+      PDList* newTraversed =
+          new PDList(traversed, new PositionDistance(stepUp));
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "path: " << &path[i] << "\t";
+      // }
+      // for (int i = 0; i < traversed->size(); i++) {
+      //   std::cout << "traversed: " << &traversed[i] << "\t";
+      // }
+      // std::cout << std::endl;
       getPath(pathUp, newTraversed, toX, toY, pathFound);
+    } else {
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "path: " << &path[i] << "\t";
+      // }
+      // for (int i = 0; i < traversed->size(); i++) {
+      //   std::cout << "traversed: " << &traversed[i] << "\t";
+      // }
+      // std::cout << std::endl << stepUp << std::endl;
+      // std::cout << stepUp->getPositionDistance() << std::endl;
+      // std::cout << "after delete" << std::endl;
+      badPositionDistances->addBack(stepUp);
     }
     if ((checkStep(stepDown) && !traversed->containsCoordinate(stepDown))) {
-      PDList* pathDown = new PDList(path, stepDown);
-      PDList* newTraversed = new PDList(traversed, stepDown);
+      std::cout << "getting last position from path in down: "
+                << path->getLast()->getPositionDistance() << std::endl;
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "path down try: " << &path[i] << "\t";
+      // }
+      PDList* pathDown = new PDList(path, new PositionDistance(stepDown));
+      PDList* newTraversed =
+          new PDList(traversed, new PositionDistance(stepDown));
       getPath(pathDown, newTraversed, toX, toY, pathFound);
+    } else {
+      std::cout << "no down path" << std::endl;
+      badPositionDistances->addBack(stepDown);
     }
     if ((checkStep(stepLeft) && !traversed->containsCoordinate(stepLeft))) {
-      PDList* pathLeft = new PDList(path, stepLeft);
-      PDList* newTraversed = new PDList(traversed, stepLeft);
+      // std::cout << "getting last position from path in left: "
+      //           << path->getLast()->getPositionDistance() << std::endl;
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "path left try: " << &path[i] << "\t";
+      // }
+      PDList* pathLeft = new PDList(path, new PositionDistance(stepLeft));
+      PDList* newTraversed =
+          new PDList(traversed, new PositionDistance(stepLeft));
       getPath(pathLeft, newTraversed, toX, toY, pathFound);
+    } else {
+      badPositionDistances->addBack(stepLeft);
     }
     if ((checkStep(stepRight) && !traversed->containsCoordinate(stepRight))) {
-      PDList* pathRight = new PDList(path, stepRight);
-      PDList* newTraversed = new PDList(traversed, stepRight);
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "path right try: " << &path[i] << "\t";
+      // }
+      PDList* pathRight = new PDList(path, new PositionDistance(stepRight));
+      PDList* newTraversed =
+          new PDList(traversed, new PositionDistance(stepRight));
       getPath(pathRight, newTraversed, toX, toY, pathFound);
+    } else {
+      // for (int i = 0; i < path->size(); i++) {
+      //   std::cout << "step right: " << &path[i] << "\t";
+      // }
+      // std::cout << std::endl << stepRight << std::endl;
+      // delete stepRight;
+      badPositionDistances->addBack(stepRight);
     }
   }
 }
@@ -220,7 +318,9 @@ bool PathPlanning::isDeadEnd(PDPtr currentPosition, PDList* traversed) {
 }
 
 // returns true if the postion passed is traversible
-bool PathPlanning::checkStep(int xStep, int yStep, PDPtr currentPosition) {
+bool PathPlanning::checkStep(const int xStep,
+                             const int yStep,
+                             const PDPtr currentPosition) {
   return (this->maze[currentPosition->getY() + yStep]
                     [currentPosition->getX() + xStep] == '.');
 }

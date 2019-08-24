@@ -31,7 +31,7 @@ class PDList {
 
   // Checks if the list contains a position-distance with the same co-ordinate
   //    as the given position.
-  bool containsCoordinate(PDPtr position);
+  bool containsCoordinate(const PDPtr position);
 
   // Remove everything from the list
   // Don't forget to clean-up the memory!
@@ -45,7 +45,7 @@ class PDList {
 
   PDList(PDList* pdList, PDPtr pdPtr);
 
-  void addAll(PDList* pdList);
+  // void addAll(PDList* pdList);
 
   PDPtr getLast();
 
