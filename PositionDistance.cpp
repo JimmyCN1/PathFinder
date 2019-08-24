@@ -23,6 +23,10 @@ PositionDistance::PositionDistance() {
   this->dist = 0;
 }
 
+PositionDistance::~PositionDistance() {
+  std::cout << "Position distance destructor" << std::endl;
+}
+
 int PositionDistance::getX() {
   return this->x;
 }

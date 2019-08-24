@@ -157,4 +157,5 @@ void PDList::clear() {
       delete this->positions[i];
     }
   }
+  // delete[] positions;
 }

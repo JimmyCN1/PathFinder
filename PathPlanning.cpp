@@ -124,19 +124,11 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
       new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
   PDList* trialPath = new PDList();
   trialPath->addBack(new PositionDistance(startingPoint));
-  PDList* traversed = new PDList();
-  traversed->addBack(new PositionDistance(startingPoint));
 
-  // for (int i = 0; i < trialPath->size(); i++) {
-  //   std::cout << "path: " << &trialPath[i] << "\t";
-  // }
-  // for (int i = 0; i < traversed->size(); i++) {
-  //   std::cout << "traversed: " << &traversed[i] << "\t";
-  // }
   delete startingPoint;
 
   // recursive helper function call
-  getPath(trialPath, traversed, toX, toY, pathFound);
+  getPath(trialPath, toX, toY, pathFound);
   delete this->badPositionDistances;
 
   for (int i = 0; i < this->quickestPath->size(); i++) {
@@ -144,15 +136,14 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY) {
               << this->quickestPath->get(i)->getPositionDistance() << std::endl;
   }
 
-  // delete traversed;
-  // delete trialPath;
+  std::cout << trialPath->size() << std::endl;
+  delete trialPath;
 
   return new PDList(this->quickestPath);
 }
 
 // recursive helper function for getPath
 void PathPlanning::getPath(PDList* path,
-                           PDList* traversed,
                            const int& toX,
                            const int& toY,
                            bool& pathFound) {
@@ -168,7 +159,7 @@ void PathPlanning::getPath(PDList* path,
       this->quickestPath = new PDList(path);
     }
     pathFound = true;
-  } else if (isDeadEnd(currentPosition, traversed)) {
+  } else if (isDeadEnd(currentPosition, path)) {
     std::cout << "reached dead end" << std::endl;
   } else if (pathFound && quickestPath->size() < path->size()) {
     std::cout << "already found a shorter path" << std::endl;
@@ -189,82 +180,35 @@ void PathPlanning::getPath(PDList* path,
         new PositionDistance(currentPosition->getX() + FORWARD_STEP,
                              currentPosition->getY() + NO_STEP,
                              currentPosition->getDistance() + STEP);
-    std::cout << "getting last position from path: "
-              << path->getLast()->getPositionDistance() << std::endl;
-
-    std::cout << "steps: " << stepUp << "\t" << stepDown << "\t" << stepLeft
-              << "\t" << stepRight << std::endl;
     // if pathExists, recurse up || down || left || right
-    if ((checkStep(stepUp) && !traversed->containsCoordinate(stepUp))) {
+    if ((checkStep(stepUp) && !path->containsCoordinate(stepUp))) {
       std::cout << "getting last position from path in up: "
                 << path->getLast()->getPositionDistance() << std::endl;
       PDList* pathUp = new PDList(path, new PositionDistance(stepUp));
-      PDList* newTraversed =
-          new PDList(traversed, new PositionDistance(stepUp));
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "path: " << &path[i] << "\t";
-      // }
-      // for (int i = 0; i < traversed->size(); i++) {
-      //   std::cout << "traversed: " << &traversed[i] << "\t";
-      // }
-      // std::cout << std::endl;
-      getPath(pathUp, newTraversed, toX, toY, pathFound);
+      getPath(pathUp, toX, toY, pathFound);
     } else {
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "path: " << &path[i] << "\t";
-      // }
-      // for (int i = 0; i < traversed->size(); i++) {
-      //   std::cout << "traversed: " << &traversed[i] << "\t";
-      // }
-      // std::cout << std::endl << stepUp << std::endl;
-      // std::cout << stepUp->getPositionDistance() << std::endl;
-      // std::cout << "after delete" << std::endl;
       badPositionDistances->addBack(stepUp);
     }
-    if ((checkStep(stepDown) && !traversed->containsCoordinate(stepDown))) {
-      std::cout << "getting last position from path in down: "
-                << path->getLast()->getPositionDistance() << std::endl;
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "path down try: " << &path[i] << "\t";
-      // }
+    if ((checkStep(stepDown) && !path->containsCoordinate(stepDown))) {
       PDList* pathDown = new PDList(path, new PositionDistance(stepDown));
-      PDList* newTraversed =
-          new PDList(traversed, new PositionDistance(stepDown));
-      getPath(pathDown, newTraversed, toX, toY, pathFound);
+      getPath(pathDown, toX, toY, pathFound);
     } else {
-      std::cout << "no down path" << std::endl;
       badPositionDistances->addBack(stepDown);
     }
-    if ((checkStep(stepLeft) && !traversed->containsCoordinate(stepLeft))) {
-      // std::cout << "getting last position from path in left: "
-      //           << path->getLast()->getPositionDistance() << std::endl;
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "path left try: " << &path[i] << "\t";
-      // }
+    if ((checkStep(stepLeft) && !path->containsCoordinate(stepLeft))) {
       PDList* pathLeft = new PDList(path, new PositionDistance(stepLeft));
-      PDList* newTraversed =
-          new PDList(traversed, new PositionDistance(stepLeft));
-      getPath(pathLeft, newTraversed, toX, toY, pathFound);
+      getPath(pathLeft, toX, toY, pathFound);
     } else {
       badPositionDistances->addBack(stepLeft);
     }
-    if ((checkStep(stepRight) && !traversed->containsCoordinate(stepRight))) {
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "path right try: " << &path[i] << "\t";
-      // }
+    if ((checkStep(stepRight) && !path->containsCoordinate(stepRight))) {
       PDList* pathRight = new PDList(path, new PositionDistance(stepRight));
-      PDList* newTraversed =
-          new PDList(traversed, new PositionDistance(stepRight));
-      getPath(pathRight, newTraversed, toX, toY, pathFound);
+      getPath(pathRight, toX, toY, pathFound);
     } else {
-      // for (int i = 0; i < path->size(); i++) {
-      //   std::cout << "step right: " << &path[i] << "\t";
-      // }
-      // std::cout << std::endl << stepRight << std::endl;
-      // delete stepRight;
       badPositionDistances->addBack(stepRight);
     }
   }
+  delete path;
 }
 
 // add a step in all traversible directions to the

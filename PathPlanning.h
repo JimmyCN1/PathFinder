@@ -35,11 +35,7 @@ class PathPlanning {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
 
-  void getPath(PDList* path,
-               PDList* traversed,
-               const int& toX,
-               const int& toY,
-               bool& pathFound);
+  void getPath(PDList* path, const int& toX, const int& toY, bool& pathFound);
 
   void setReachablePositions(PDPtr currentPosition, PDList* reachablePositions);
 
