@@ -95,78 +95,28 @@ PDList* PathPlanning::getReachablePositions()
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(const int& toX, const int& toY)
 {
-  // // recursive Implementation (might take a while on some tests cases)
-  // // initialisation
-  // bool pathFound = false;
-  // PDPtr startingPoint =
-  //     new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
-  // PDList* trialPath = new PDList();
-  // trialPath->addBack(new PositionDistance(startingPoint));
-
-  // delete startingPoint;
-
-  // // recursive helper function call
-  // getPath(trialPath, toX, toY, pathFound);
-  // delete this->badPositionDistances;
-
-  // for (int i = 0; i < this->quickestPath->size(); i++) {
-  //   std::cout << "quickestPath: "
-  //             << this->quickestPath->get(i)->getPositionDistance() <<
-  //             std::endl;
-  // }
-
-  // std::cout << trialPath->size() << std::endl;
-  // delete trialPath;
-
-  // return new PDList(this->quickestPath);
-
+  // recursive Implementation (might take a while on some tests cases)
   // initialisation
-  PDPtr startingPoint = new PositionDistance(this->initialX, this->initialY, NO_STEP);
-  PDList* reachablePositions = getReachablePositions();
-  reachablePositions->addBack(startingPoint);
-  // find and set the goal pointer
-  PDPtr goal = nullptr;
-  for (int i = 0; i < reachablePositions->size(); i++) {
-    if (reachablePositions->get(i)->getX() == toX && reachablePositions->get(i)->getY() == toY) {
-      goal = new PositionDistance(toX, toY, reachablePositions->get(i)->getDistance());
-    }
-  }
+  bool pathFound = false;
+  PDPtr startingPoint = new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
+  PDList* trialPath = new PDList();
+  trialPath->addBack(new PositionDistance(startingPoint));
 
-  PDList* reversePath = new PDList();
-  reversePath->addBack(goal);
-  int steps = 0;
-  bool startingPointReached = false;
-  // path finding algorithm
-  while (!startingPointReached || steps < goal->getDistance()) {
-    if (reversePath->getLast()->equals(startingPoint)) {
-      startingPointReached = true;
-    }
-
-    PDPtr currentPosition = reversePath->getLast();
-    for (int i = 0; i < reachablePositions->size(); i++) {
-      PDPtr potentialPosition = reachablePositions->get(i);
-      if (!reversePath->containsCoordinate(potentialPosition)) {
-        if (currentPosition->getDistance() - potentialPosition->getDistance() == 1) {
-          if (isSingleStep(currentPosition, potentialPosition)) {
-            reversePath->addBack(new PositionDistance(potentialPosition));
-          }
-        }
-      }
-    }
-    steps++;
-  }
-
-  // deep copy of path on correct order
-  PDList* deepCopyPath = new PDList();
-  for (int i = reversePath->size() - 1; i >= 0; i--) {
-    deepCopyPath->addBack(new PositionDistance(reversePath->get(i)));
-  }
-
-  delete goal;
   delete startingPoint;
-  delete reversePath;
 
-  return deepCopyPath;
+  // recursive helper function call
+  getPath(trialPath, toX, toY, pathFound);
+  delete this->badPositionDistances;
+
+  for (int i = 0; i < this->quickestPath->size(); i++) {
+    std::cout << "quickestPath: "
+              << this->quickestPath->get(i)->getPositionDistance() << std::endl;
+  }
+
+  std::cout << trialPath->size() << std::endl;
+  delete trialPath;
+
+  return new PDList(this->quickestPath);
 }
 
 // recursive helper function for getPath
