@@ -22,24 +22,13 @@ PDList::PDList(PDList* pdList)
   this->numPositions = this->size();
 }
 
-// a copy constructor which also adds the passed PDPtr to the end of the new
-// PDList
-PDList::PDList(PDList* pdList, PDPtr pdPtr)
-{
-  this->positions = new PDPtr[0];
-  for (int i = 0; i < pdList->size(); i++) {
-    this->addBack(new PositionDistance(pdList->get(i)));
-  }
-  this->addBack(pdPtr);
-}
-
 PDList::~PDList() { clear(); }
 
 int PDList::size() { return this->numPositions; }
 
 PDPtr PDList::get(int i) { return positions[i]; }
 
-PDPtr PDList::getLast() { return get(this->size() - 1); }
+PDPtr PDList::getLast() { return this->get(this->size() - 1); }
 
 void PDList::setLast(PDPtr position)
 {
@@ -54,6 +43,7 @@ void PDList::addBack(PDPtr position)
     tempList[i] = new PositionDistance(this->get(i));
   }
   tempList[this->numPositions] = new PositionDistance(position);
+  delete[] this->positions;
   this->positions = tempList;
 
   this->numPositions++;
@@ -83,6 +73,7 @@ void PDList::removeAt(const int index)
       tempIndex++;
     }
   }
+  delete[] this->positions;
   this->positions = tempList;
   this->numPositions--;
 }
@@ -141,8 +132,6 @@ bool PDList::containsCoordinate(const PDPtr position)
   }
   return isContained;
 }
-
-void PDList::toString() {}
 
 // deletes all PDPtrs in the positions array
 void PDList::clear()

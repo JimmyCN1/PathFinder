@@ -18,13 +18,6 @@ PositionDistance::PositionDistance(PositionDistance* originalPositionDistance)
   this->dist = originalPositionDistance->getDistance();
 }
 
-PositionDistance::PositionDistance()
-{
-  this->x = 0;
-  this->y = 0;
-  this->dist = 0;
-}
-
 PositionDistance::~PositionDistance() {}
 
 int PositionDistance::getX() { return this->x; }
@@ -36,6 +29,7 @@ std::string PositionDistance::getPositionDistance()
   return "PosiDistance__ x: " + std::to_string(x) + ", y: " + std::to_string(y) + ", dist: " + std::to_string(dist);
 }
 
+// return true if x, y coordinates equal position's x, y coordinates
 bool PositionDistance::equals(PositionDistance* position)
 {
   return (this->x == position->getX() && this->y == position->getY());

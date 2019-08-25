@@ -43,10 +43,6 @@ class PDList {
 
   PDList(PDList* pdList);
 
-  PDList(PDList* pdList, PDPtr pdPtr);
-
-  // void addAll(PDList* pdList);
-
   PDPtr getLast();
 
   void setLast(PDPtr position);
@@ -56,8 +52,6 @@ class PDList {
   void removeAt(const int index);
 
   bool containsAllCoordinatesFromArray(PDList* coordinates);
-
-  void toString();
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */

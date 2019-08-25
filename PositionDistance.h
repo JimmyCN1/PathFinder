@@ -7,7 +7,7 @@
 #include <string>
 
 class PositionDistance {
-public:
+  public:
   /*                                           */
   /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
   /*                                           */
@@ -24,22 +24,17 @@ public:
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
-  // constructor
-  PositionDistance(const int &x, const int &y, const int &dist);
+  PositionDistance(const int& x, const int& y, const int& dist);
 
-  // copy constructor
-  PositionDistance(PositionDistance *originalPositionDistance);
-
-  PositionDistance();
+  PositionDistance(PositionDistance* originalPositionDistance);
 
   ~PositionDistance();
 
   std::string getPositionDistance();
 
-  // return true if x, y coordinates equal position's x, y coordinates
-  bool equals(PositionDistance *position);
+  bool equals(PositionDistance* position);
 
-private:
+  private:
   int x;
   int y;
   int dist;
@@ -49,6 +44,6 @@ private:
 /* DO NOT MOFIFY THIS TYPEDEF                */
 /*                                           */
 // Pointer to a Position-Distance
-typedef PositionDistance *PDPtr;
+typedef PositionDistance* PDPtr;
 
 #endif // COSC_ASS_ONE_POSITION

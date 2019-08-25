@@ -35,34 +35,20 @@ class PathPlanning {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
 
-  void getPath(PDList* path, const int& toX, const int& toY, bool& pathFound);
-
   void setReachablePositions(PDPtr currentPosition, PDList* reachablePositions);
 
-  bool isDeadEnd(PDPtr currentPosition, PDList* traversed);
-
-  // goes to one of the four possible next positions in th maze
-  // and checks to see if they are traversable
-  // if true, they are added to the reachable list
   bool checkStep(const int xStep, const int yStep, const PDPtr currentPosition);
-
-  // returns true if passed position is traversible
-  bool checkStep(PDPtr nextPosition);
 
   void setNextReachablePosition(int xStep, int yStep, PDPtr currentPosition,
       PDList* reachablePositions);
 
   bool isSingleStep(PDPtr currentPosition, PDPtr potentialPosition);
 
-  bool goalReached(PositionDistance* position, int goalX, int goalY);
-
   Grid maze;
   int rows;
   int cols;
   int initialX;
   int initialY;
-  PDList* quickestPath;
-  PDList* badPositionDistances;
 };
 
 #endif // COSC_ASS_ONE_PATH_PLANNING

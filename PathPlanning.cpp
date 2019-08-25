@@ -1,4 +1,36 @@
 
+/*
+  Milestone 2
+  This milestone involved implementing the given algorithm and to return the deep copy of all the reachable positions.
+  The implementation of this algorithm was pretty straight forward. In order to make the algorithm more efficient, 
+  I deleted the heap allocated startingPosition directly after it was added to the reachable positions array since,
+  after this, it would not be referenced again in the algorithm.
+  Similarly, the heap allocated reachablePositions array and the tempPositions array were deleted at the end of the 
+  algorithm, after the deep copy had been performed.
+  I decided to create the methods containsAllCoordinatesFromArray, setReachablPositions and removeAt in order to 
+  improve the code readability of the function.
+  The positive aspects of this algorithm is that it effienctly deallocates memory at the right times. However, the 
+  negative aspects could be that there could maybe be less heap allocation going on as heap allocation of memory is 
+  more costly than allocating memory on the stack
+
+  Milestone 3/4
+  The approach taken in the algorithm designed for milestone three was to start at the goal and work backwards towards
+  the initial position, appending the next closest step to the back of an array, before reversing the array and returning
+  this as a deep copy of the quickest path from the initial position to the goal. 
+  This implementation is efficient because it uses the previously generated reachable positions from the previous milestone
+  rather than to find the positions from scratch. Because it uses the distance penalty of each position distance as a check
+  and the the relative position of the next position from the current position, the algorthim really only has a few 
+  posibilities to check at each step. Another method way to develop this algorithm would have been via recursion to 
+  recursively generate all the traversible positions from the current position and havent already been traversed in that
+  path and then recurse again on the newly incremented path. This method might be more flexible or more widely applicable 
+  in however, with the help of the algortithm from milestone 2, this option quickly becomes much more inefficient than 
+  simply working backwards from the goal.
+  This implementation is efficient since it uses the previously generated reachablePositions array to generate the quickest
+  path. The algoritihm will only check steps that are one step closer to the goal and that are adjacent, hence, the amount
+  of computation required to get the quickest path is at a minimum. the algorithm also prevents any memory leakage and 
+  uses the addBack helper function which creates arrays of the correct size in order to efficiently use memory.
+
+*/
 #define EMPTY 0
 #define INITIAL_DISTANCE 0
 #define NO_STEP 0
@@ -7,9 +39,6 @@
 #define BACKWARD_STEP -1
 #define FIRST_POSITION 0
 #define FIRST_STEP 1
-#define NO_PATH 0
-#define SINGLE_PATH 2
-#define INITIAL 0
 
 #include "PathPlanning.h"
 
@@ -21,28 +50,25 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols)
 {
   if (rows > EMPTY && cols > EMPTY) {
     this->maze = new char*[rows];
-    for (int i = FIRST_POSITION; i < rows; i++) {
-      this->maze[i] = new char[cols];
+    for (int row = FIRST_POSITION; row < rows; row++) {
+      this->maze[row] = new char[cols];
     }
-    for (int i = FIRST_POSITION; i < rows; i++) {
-      for (int j = FIRST_POSITION; j < cols; j++) {
-        this->maze[i][j] = maze[i][j];
+    for (int row = FIRST_POSITION; row < rows; row++) {
+      for (int col = FIRST_POSITION; col < cols; col++) {
+        this->maze[row][col] = maze[row][col];
       }
     }
     this->rows = rows;
     this->cols = cols;
-    this->quickestPath = new PDList();
-    this->badPositionDistances = new PDList();
   }
 }
 
 PathPlanning::~PathPlanning()
 {
-  for (int i = FIRST_POSITION; i < rows; i++) {
-    delete maze[i];
+  for (int row = FIRST_POSITION; row < rows; row++) {
+    delete maze[row];
   }
   delete[] maze;
-  delete this->quickestPath;
 }
 
 void PathPlanning::initialPosition(int x, int y)
@@ -82,12 +108,6 @@ PDList* PathPlanning::getReachablePositions()
   delete reachablePositions;
   delete tempPositions;
 
-  // for (int i = 0; i < deepCopyReachablePositions->size(); i++) {
-  //   std::cout << "deepCopy: "
-  //             << deepCopyReachablePositions->get(i)->getPositionDistance()
-  //             << std::endl;
-  // }
-
   return deepCopyReachablePositions;
 }
 
@@ -95,31 +115,6 @@ PDList* PathPlanning::getReachablePositions()
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList* PathPlanning::getPath(const int& toX, const int& toY)
 {
-  // // recursive Implementation (might take a while on some tests cases)
-  // // initialisation
-  // bool pathFound = false;
-  // PDPtr startingPoint =
-  //     new PositionDistance(initialX, initialY, INITIAL_DISTANCE);
-  // PDList* trialPath = new PDList();
-  // trialPath->addBack(new PositionDistance(startingPoint));
-
-  // delete startingPoint;
-
-  // // recursive helper function call
-  // getPath(trialPath, toX, toY, pathFound);
-  // delete this->badPositionDistances;
-
-  // for (int i = 0; i < this->quickestPath->size(); i++) {
-  //   std::cout << "quickestPath: "
-  //             << this->quickestPath->get(i)->getPositionDistance() <<
-  //             std::endl;
-  // }
-
-  // std::cout << trialPath->size() << std::endl;
-  // delete trialPath;
-
-  // return new PDList(this->quickestPath);
-
   // initialisation
   PDPtr startingPoint = new PositionDistance(this->initialX, this->initialY, NO_STEP);
   PDList* reachablePositions = getReachablePositions();
@@ -127,38 +122,41 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY)
   // find and set the goal pointer
   PDPtr goal = nullptr;
   for (int i = 0; i < reachablePositions->size(); i++) {
-    if (reachablePositions->get(i)->getX() == toX && reachablePositions->get(i)->getY() == toY) {
+    if (reachablePositions->get(i)->getX() == toX &&
+        reachablePositions->get(i)->getY() == toY) {
       goal = new PositionDistance(toX, toY, reachablePositions->get(i)->getDistance());
     }
   }
 
   PDList* reversePath = new PDList();
   reversePath->addBack(goal);
-  int steps = 0;
+  int steps = NO_STEP;
   bool startingPointReached = false;
+
   // path finding algorithm
   while (!startingPointReached || steps < goal->getDistance()) {
-    if (reversePath->getLast()->equals(startingPoint)) {
-      startingPointReached = true;
-    }
-
     PDPtr currentPosition = reversePath->getLast();
     for (int i = 0; i < reachablePositions->size(); i++) {
       PDPtr potentialPosition = reachablePositions->get(i);
       if (!reversePath->containsCoordinate(potentialPosition)) {
-        if (currentPosition->getDistance() - potentialPosition->getDistance() == 1) {
+        // check if potentialPosition is one step closer to the initPos
+        if (currentPosition->getDistance() - potentialPosition->getDistance() == STEP) {
+          // check if potentialPosition is adjacent to currentPosition
           if (isSingleStep(currentPosition, potentialPosition)) {
             reversePath->addBack(new PositionDistance(potentialPosition));
           }
         }
       }
     }
+    if (currentPosition->equals(startingPoint)) {
+      startingPointReached = true;
+    }
     steps++;
   }
 
-  // deep copy of path on correct order
+  // deep copy of path in the correct order (initPos -> goal)
   PDList* deepCopyPath = new PDList();
-  for (int i = reversePath->size() - 1; i >= 0; i--) {
+  for (int i = reversePath->size() - STEP; i >= NO_STEP; i--) {
     deepCopyPath->addBack(new PositionDistance(reversePath->get(i)));
   }
 
@@ -167,71 +165,6 @@ PDList* PathPlanning::getPath(const int& toX, const int& toY)
   delete reversePath;
 
   return deepCopyPath;
-}
-
-// recursive helper function for getPath
-void PathPlanning::getPath(PDList* path, const int& toX, const int& toY,
-    bool& pathFound)
-{
-  std::cout << "getting last position from path: "
-            << path->getLast()->getPositionDistance() << std::endl;
-  PDPtr currentPosition = path->getLast();
-  static int recursionCount = INITIAL;
-  recursionCount++;
-  std::cout << "recursionCount: " << recursionCount << std::endl;
-
-  if (goalReached(currentPosition, toX, toY)) {
-    if (!pathFound || (pathFound && path->size() < quickestPath->size())) {
-      this->quickestPath = new PDList(path);
-    }
-    pathFound = true;
-  } else if (isDeadEnd(currentPosition, path)) {
-    std::cout << "reached dead end" << std::endl;
-  } else if (pathFound && quickestPath->size() < path->size()) {
-    std::cout << "already found a shorter path" << std::endl;
-  } else {
-    // create new PositionDistance* for potential reachable positions
-    PDPtr stepUp = new PositionDistance(currentPosition->getX() + NO_STEP,
-        currentPosition->getY() + BACKWARD_STEP,
-        currentPosition->getDistance() + STEP);
-    PDPtr stepDown = new PositionDistance(currentPosition->getX() + NO_STEP,
-        currentPosition->getY() + FORWARD_STEP,
-        currentPosition->getDistance() + STEP);
-    PDPtr stepLeft = new PositionDistance(currentPosition->getX() + BACKWARD_STEP,
-        currentPosition->getY() + NO_STEP,
-        currentPosition->getDistance() + STEP);
-    PDPtr stepRight = new PositionDistance(currentPosition->getX() + FORWARD_STEP,
-        currentPosition->getY() + NO_STEP,
-        currentPosition->getDistance() + STEP);
-    // if pathExists, recurse up || down || left || right
-    if ((checkStep(stepUp) && !path->containsCoordinate(stepUp))) {
-      std::cout << "getting last position from path in up: "
-                << path->getLast()->getPositionDistance() << std::endl;
-      PDList* pathUp = new PDList(path, new PositionDistance(stepUp));
-      getPath(pathUp, toX, toY, pathFound);
-    } else {
-      badPositionDistances->addBack(stepUp);
-    }
-    if ((checkStep(stepDown) && !path->containsCoordinate(stepDown))) {
-      PDList* pathDown = new PDList(path, new PositionDistance(stepDown));
-      getPath(pathDown, toX, toY, pathFound);
-    } else {
-      badPositionDistances->addBack(stepDown);
-    }
-    if ((checkStep(stepLeft) && !path->containsCoordinate(stepLeft))) {
-      PDList* pathLeft = new PDList(path, new PositionDistance(stepLeft));
-      getPath(pathLeft, toX, toY, pathFound);
-    } else {
-      badPositionDistances->addBack(stepLeft);
-    }
-    if ((checkStep(stepRight) && !path->containsCoordinate(stepRight))) {
-      PDList* pathRight = new PDList(path, new PositionDistance(stepRight));
-      getPath(pathRight, toX, toY, pathFound);
-    } else {
-      badPositionDistances->addBack(stepRight);
-    }
-  }
-  delete path;
 }
 
 // add a step in all traversible directions to the
@@ -261,28 +194,6 @@ void PathPlanning::setReachablePositions(PDPtr currentPosition,
   }
 }
 
-// returns true if the robot cannot move forward in any direction
-bool PathPlanning::isDeadEnd(PDPtr currentPosition, PDList* traversed)
-{
-  bool isDeadEnd = true;
-  PDPtr stepUp = new PositionDistance(currentPosition->getX() + NO_STEP,
-      currentPosition->getY() + BACKWARD_STEP,
-      currentPosition->getDistance() + STEP);
-  PDPtr stepDown = new PositionDistance(currentPosition->getX() + NO_STEP,
-      currentPosition->getY() + FORWARD_STEP,
-      currentPosition->getDistance() + STEP);
-  PDPtr stepLeft = new PositionDistance(currentPosition->getX() + BACKWARD_STEP,
-      currentPosition->getY() + NO_STEP,
-      currentPosition->getDistance() + STEP);
-  PDPtr stepRight = new PositionDistance(currentPosition->getX() + FORWARD_STEP,
-      currentPosition->getY() + NO_STEP,
-      currentPosition->getDistance() + STEP);
-  if ((checkStep(stepUp) && !traversed->containsCoordinate(stepUp)) || (checkStep(stepDown) && !traversed->containsCoordinate(stepDown)) || (checkStep(stepLeft) && !traversed->containsCoordinate(stepLeft)) || (checkStep(stepRight) && !traversed->containsCoordinate(stepRight))) {
-    isDeadEnd = false;
-  }
-  return isDeadEnd;
-}
-
 // returns true if the postion passed is traversible
 bool PathPlanning::checkStep(const int xStep, const int yStep,
     const PDPtr currentPosition)
@@ -290,12 +201,6 @@ bool PathPlanning::checkStep(const int xStep, const int yStep,
   return (this->maze[currentPosition->getY() + yStep]
                     [currentPosition->getX() + xStep]
       == '.');
-}
-
-// returns true if the postion passed is traversible
-bool PathPlanning::checkStep(PDPtr nextPosition)
-{
-  return (this->maze[nextPosition->getY()][nextPosition->getX()] == '.');
 }
 
 // adds the next reachable position to the passes array
@@ -316,12 +221,9 @@ void PathPlanning::setNextReachablePosition(int xStep, int yStep,
 // returns true if the potential position is one step away from the current position
 bool PathPlanning::isSingleStep(PDPtr currentPosition, PDPtr potentialPosition)
 {
-  return (std::abs(currentPosition->getX() - potentialPosition->getX()) == STEP && currentPosition->getY() == potentialPosition->getY()) || (currentPosition->getX() == potentialPosition->getX() && std::abs(currentPosition->getY() - potentialPosition->getY()) == STEP);
-}
-
-// returns true if position cordinates matches the goal
-bool PathPlanning::goalReached(PositionDistance* position, int goalX,
-    int goalY)
-{
-  return position->getX() == goalX && position->getY() == goalY;
+  return (std::abs(currentPosition->getX() - potentialPosition->getX()) == STEP && 
+                   currentPosition->getY() == potentialPosition->getY()) 
+                   || 
+                  (currentPosition->getX() == potentialPosition->getX() && 
+          std::abs(currentPosition->getY() - potentialPosition->getY()) == STEP);
 }
