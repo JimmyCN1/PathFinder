@@ -7,14 +7,15 @@
 #include <cstdlib>
 #include <iostream>
 
-PDList::PDList() {
+PDList::PDList()
+{
   this->positions = new PDPtr[0];
   this->numPositions = EMPTY;
 }
 
-PDList::PDList(PDList *pdList) {
+PDList::PDList(PDList* pdList)
+{
   this->positions = new PDPtr[0];
-  // this->addAll(pdList);
   for (int i = 0; i < pdList->size(); i++) {
     this->addBack(new PositionDistance(pdList->get(i)));
   }
@@ -23,9 +24,9 @@ PDList::PDList(PDList *pdList) {
 
 // a copy constructor which also adds the passed PDPtr to the end of the new
 // PDList
-PDList::PDList(PDList *pdList, PDPtr pdPtr) {
+PDList::PDList(PDList* pdList, PDPtr pdPtr)
+{
   this->positions = new PDPtr[0];
-  // this->addAll(pdList);
   for (int i = 0; i < pdList->size(); i++) {
     this->addBack(new PositionDistance(pdList->get(i)));
   }
@@ -40,19 +41,15 @@ PDPtr PDList::get(int i) { return positions[i]; }
 
 PDPtr PDList::getLast() { return get(this->size() - 1); }
 
-void PDList::setLast(PDPtr position) {
+void PDList::setLast(PDPtr position)
+{
   this->positions[this->numPositions - ONE] = position;
 }
 
-// void PDList::addAll(PDList* pdList) {
-//   for (int i = 0; i < pdList->size(); i++) {
-//     this->addBack(new PositionDistance(pdList->get(i)));
-//   }
-// }
-
 // copies the contents into a new array of size+=1 and adds the new position
-void PDList::addBack(PDPtr position) {
-  PDPtr *tempList = new PDPtr[this->numPositions + 1];
+void PDList::addBack(PDPtr position)
+{
+  PDPtr* tempList = new PDPtr[this->numPositions + 1];
   for (int i = 0; i < this->numPositions; i++) {
     tempList[i] = new PositionDistance(this->get(i));
   }
@@ -64,7 +61,8 @@ void PDList::addBack(PDPtr position) {
 
 // removes the desired position and copies
 // over the content to a new smaller array
-void PDList::remove(PDPtr position) {
+void PDList::remove(PDPtr position)
+{
   if (!this->containsCoordinate(position)) {
     std::cout << "Error: PDList does not contain this postion:: "
               << position->getPositionDistance() << std::endl;
@@ -75,8 +73,9 @@ void PDList::remove(PDPtr position) {
 }
 
 // removes the position at the passed index from positions
-void PDList::removeAt(const int index) {
-  PDPtr *tempList = new PDPtr[this->numPositions - 1];
+void PDList::removeAt(const int index)
+{
+  PDPtr* tempList = new PDPtr[this->numPositions - 1];
   int tempIndex = 0;
   for (int i = 0; i < this->size(); i++) {
     if (i != index) {
@@ -89,7 +88,8 @@ void PDList::removeAt(const int index) {
 }
 
 // returns the index of the passed postion in a pdlist
-int PDList::getIndexOf(PDPtr position) {
+int PDList::getIndexOf(PDPtr position)
+{
   bool matchFound = false;
   int index = -1;
   for (int i = 0; i < this->size(); i++) {
@@ -105,7 +105,8 @@ int PDList::getIndexOf(PDPtr position) {
 
 // returns true if all the coordinates int the parameter list
 // are contained within this
-bool PDList::containsAllCoordinatesFromArray(PDList *coordinates) {
+bool PDList::containsAllCoordinatesFromArray(PDList* coordinates)
+{
   bool hasCoordinates = true;
   if (this->numPositions != EMPTY) {
     int i = 0;
@@ -122,7 +123,8 @@ bool PDList::containsAllCoordinatesFromArray(PDList *coordinates) {
 }
 
 // returns true if the position passed is contained in this
-bool PDList::containsCoordinate(const PDPtr position) {
+bool PDList::containsCoordinate(const PDPtr position)
+{
   bool isContained = false;
   if (this->numPositions != EMPTY) {
     int i = 0;
@@ -143,11 +145,12 @@ bool PDList::containsCoordinate(const PDPtr position) {
 void PDList::toString() {}
 
 // deletes all PDPtrs in the positions array
-void PDList::clear() {
+void PDList::clear()
+{
   for (int i = 0; i < this->numPositions; i++) {
     if (this->positions != nullptr) {
       delete this->positions[i];
     }
   }
-  // delete[] positions;
+  delete[] positions;
 }
